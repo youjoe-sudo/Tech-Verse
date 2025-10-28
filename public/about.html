@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>TechVerse — About</title>
 
-    <!-- Fonts + Icons + AOS -->
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
         rel="stylesheet">
@@ -14,7 +13,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
-        /* Small reset */
+        /* RESET + BASE */
         *,
         *::before,
         *::after {
@@ -28,63 +27,41 @@
             height: 100%;
         }
 
-        /* Theme tokens */
-        :root {
-            --bg: #020d1f;
-            --blue-neon: #06a6ff;
-            --accent: #8a49ff;
-            --soft: #9fb7d8;
-            --glass: rgba(255, 255, 255, 0.04);
-            --card: rgba(255, 255, 255, 0.03);
-            --maxw: 1200px;
-            --text-primary: #dbe9ff;
-            --text-secondary: #bcd6ff;
-            --text-muted: #9fc9ff;
-            --nav-bg: rgba(2, 13, 31, 0.98);
-            --header-h: 72px;
-            --radius-lg: 12px;
-        }
-
-        :root[data-theme="light"] {
-            --bg: #f8fafc;
-            --blue-neon: #0ea5e9;
-            --accent: #7c3aed;
-            --soft: #64748b;
-            --glass: rgba(0, 0, 0, 0.04);
-            --card: rgba(0, 0, 0, 0.03);
-            --text-primary: #0f1724;
-            --text-secondary: #334155;
-            --text-muted: #475569;
-            --nav-bg: rgba(255, 255, 255, 0.92);
-        }
-
-        /* smooth transitions but not for every single transform on every element to avoid jitter */
-        html,
-        body,
-        .container,
-        header,
-        nav a,
-        .about-card {
-            transition: background-color .22s ease, color .22s ease, border-color .22s ease, box-shadow .22s ease;
-        }
-
-        html[dir="rtl"] {
-            direction: rtl;
-        }
-
         body {
-            font-family: Poppins, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            font-family: Poppins, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
             -webkit-font-smoothing: antialiased;
             background:
                 radial-gradient(1200px 600px at 10% 10%, rgba(6, 166, 255, 0.03), transparent),
                 radial-gradient(1000px 500px at 90% 90%, rgba(138, 73, 255, 0.02), transparent),
-                var(--bg);
-            color: var(--text-primary);
-            overflow-x: hidden;
+                var(--bg, #020d1f);
+            color: var(--text-primary, #dbe9ff);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Container + header spacing so content never hidden under fixed header */
+        :root {
+            --bg: #020d1f;
+            --card: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.04);
+            --accent: #8a49ff;
+            --neon: #06a6ff;
+            --muted: #9fb7d8;
+            --radius: 12px;
+            --maxw: 1200px;
+            --header-h: 72px;
+        }
+
+        :root[data-theme="light"] {
+            --bg: #f8fafc;
+            --card: rgba(0, 0, 0, 0.03);
+            --glass: rgba(0, 0, 0, 0.04);
+            --neon: #0ea5e9;
+            --accent: #7c3aed;
+            --text-primary: #0f1724;
+            --muted: #64748b;
+        }
+
+        /* Container & header */
         .container {
             max-width: var(--maxw);
             margin: 0 auto;
@@ -95,17 +72,14 @@
             padding-top: calc(var(--header-h) + 32px);
         }
 
-        /* NAV */
         header {
             position: fixed;
-            left: 0;
-            right: 0;
-            top: 0;
-            z-index: 1000;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            inset: 0 0 auto 0;
             height: var(--header-h);
+            z-index: 1200;
+            background: rgba(2, 13, 31, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             display: flex;
             align-items: center;
         }
@@ -114,17 +88,18 @@
             width: 100%;
             max-width: var(--maxw);
             margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
             gap: 12px;
         }
 
+        /* Brand */
         .brand {
             display: flex;
+            gap: 12px;
             align-items: center;
-            gap: 14px;
             text-decoration: none;
             color: inherit;
         }
@@ -133,506 +108,449 @@
             width: 48px;
             height: 48px;
             border-radius: 10px;
-            background: linear-gradient(135deg, var(--blue-neon), var(--accent));
+            background: linear-gradient(135deg, var(--neon), var(--accent));
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 18px rgba(6, 166, 255, 0.12);
+            box-shadow: 0 8px 30px rgba(6, 166, 255, 0.08);
             overflow: hidden;
         }
 
-        .logo-mark img {
-            height: 36px;
-            display: block;
-            object-fit: contain;
-        }
-
-        :root[data-theme="light"] .logo-mark img {
-            filter: brightness(0) saturate(100%) invert(12%) sepia(8%) saturate(1000%) hue-rotate(170deg) contrast(95%);
-        }
-
         .brand h1 {
-            margin: 0;
             font-family: Orbitron, monospace;
             font-size: 18px;
             letter-spacing: 1px;
-            color: var(--text-primary);
+            margin: 0;
         }
 
         .brand small {
             display: block;
             font-size: 11px;
-            color: var(--soft);
+            color: var(--muted);
             margin-top: 2px;
         }
 
+        /* NAV */
         nav#mainNav {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
         }
 
         nav#mainNav a {
             display: flex;
-            align-items: center;
             gap: 8px;
-            padding: 8px 14px;
+            align-items: center;
+            padding: 8px 12px;
             border-radius: 8px;
-            color: var(--soft);
+            color: var(--muted);
             text-decoration: none;
             font-weight: 600;
-            position: relative;
+            transition: all .18s ease;
         }
 
         nav#mainNav a:hover {
             background: var(--glass);
             color: var(--text-primary);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         nav#mainNav a.active {
-            background: linear-gradient(90deg, var(--blue-neon), var(--accent));
+            background: linear-gradient(90deg, var(--neon), var(--accent));
             color: var(--bg);
-            box-shadow: 0 8px 30px rgba(6, 166, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(6, 166, 255, 0.06);
         }
 
-        html[dir="rtl"] nav#mainNav a.active {
-            background: linear-gradient(270deg, var(--blue-neon), var(--accent));
-        }
-
-        nav#mainNav a::before {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--blue-neon);
-            transition: all .25s ease;
-            transform: translateX(-50%);
-        }
-
-        html[dir="rtl"] nav#mainNav a::before {
-            right: 50%;
-            left: auto;
-            transform: translateX(50%);
-        }
-
-        nav#mainNav a:hover::before,
-        nav#mainNav a.active::before {
-            width: 100%;
-        }
-
-        /* Controls */
-        .controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        #langSelect,
-        #langSelectMobile {
+        /* hamburger (custom animated) */
+        .hamburger {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
             background: var(--glass);
-            color: var(--soft);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 8px 10px;
-            border-radius: 8px;
-            min-width: 60px;
-        }
-
-        #themeToggle,
-        #themeToggleMobile {
-            padding: 8px 10px;
-            border-radius: 8px;
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            cursor: pointer;
-            color: var(--soft);
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            position: relative;
+            transition: transform .18s ease;
         }
 
-        /* Mobile */
+        .hamburger:active {
+            transform: scale(.98);
+        }
+
+        .hamburger-box {
+            width: 22px;
+            height: 16px;
+            position: relative;
+            display: block;
+        }
+
+        .hamburger-box span {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--muted);
+            display: block;
+            transition: transform .28s cubic-bezier(.2, .9, .2, 1), opacity .18s ease, top .28s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger-box span:nth-child(1) {
+            top: 0;
+        }
+
+        .hamburger-box span:nth-child(2) {
+            top: 7px;
+        }
+
+        .hamburger-box span:nth-child(3) {
+            top: 14px;
+        }
+
+        .hamburger.open .hamburger-box span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger.open .hamburger-box span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(.8);
+        }
+
+        .hamburger.open .hamburger-box span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* Controls group */
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #themeToggle {
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+        }
+
+        /* responsive */
         #menuToggle,
         .mobile-controls {
             display: none;
         }
 
         @media (max-width:980px) {
+            nav#mainNav {
+                display: none;
+            }
 
             #menuToggle,
             .mobile-controls {
                 display: block;
             }
 
-            .desktop-controls,
-            nav#mainNav {
+            .desktop-controls {
                 display: none;
-            }
-
-            nav#mainNav {
-                display: flex;
-                position: absolute;
-                top: var(--header-h);
-                left: 0;
-                right: 0;
-                flex-direction: column;
-                gap: 0;
-                background: var(--nav-bg);
-                backdrop-filter: blur(12px);
-                border-top: 1px solid rgba(255, 255, 255, 0.04);
-                transform: translateY(-100%);
-                opacity: 0;
-                pointer-events: none;
-                transition: transform .28s cubic-bezier(.2, .9, .2, 1), opacity .28s ease;
-                z-index: 999;
-                padding: 12px 20px 24px 20px;
-                height: calc(100vh - var(--header-h));
-                overflow-y: auto;
             }
 
             nav#mainNav.open {
-                transform: translateY(0);
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            nav#mainNav a {
-                width: 100%;
-                padding: 12px 16px;
-                margin: 4px 0;
-                justify-content: flex-start;
-            }
-
-            html[dir="rtl"] nav#mainNav a {
-                justify-content: flex-end;
-            }
-
-            nav#mainNav a::before {
-                display: none;
-            }
-
-            .mobile-controls {
                 display: flex;
-                justify-content: space-between;
-                width: 100%;
-                margin-top: 16px;
-                padding-top: 12px;
-                border-top: 1px solid var(--glass);
-            }
-
-            .mobile-controls #themeToggleMobile,
-            .mobile-controls #langSelectMobile {
-                width: 48%;
-            }
-
-            .container {
-                padding-left: 16px;
-                padding-right: 16px;
+                flex-direction: column;
+                position: fixed;
+                inset: var(--header-h) 0 0 0;
+                padding: 20px;
+                gap: 8px;
+                background: rgba(2, 13, 31, 0.96);
+                backdrop-filter: blur(8px);
+                overflow-y: auto;
+                z-index: 1100;
             }
         }
 
-        /* About / cards */
+        /* About / content */
         .page-header {
-            padding: 80px 0 40px;
+            padding: 80px 0 32px;
             text-align: center;
         }
 
-        .page-content {
-            padding-bottom: 80px;
-        }
-
-        .about-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 28px;
-            align-items: flex-start;
-        }
-
-        .about-card {
-            background: var(--card);
-            padding: 22px;
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 6px 16px rgba(2, 13, 31, 0.35);
-            color: var(--text-primary);
-        }
-
-        .about-card h2 {
-            margin-bottom: 8px;
-        }
-
-        .about-card h4 {
-            color: var(--blue-neon);
-            margin-top: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 16px;
-        }
-
-        .brand-tile {
-            flex: 0 0 220px;
-            min-width: 220px;
-            padding: 20px;
-            border-radius: var(--radius-lg);
-            background: linear-gradient(135deg, rgba(6, 166, 255, 0.10), rgba(138, 73, 255, 0.06));
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 6px 18px rgba(2, 13, 31, 0.32);
-        }
-
-        @media (max-width:980px) {
-            .brand-tile {
-                flex: 1 1 100%;
-                height: 160px;
-                min-width: 100%;
-            }
-        }
-
-        /* Accessibility focus */
-        a:focus,
-        button:focus,
-        select:focus {
-            outline: 3px solid rgba(10, 132, 255, 0.18);
-            outline-offset: 2px;
-        }
-
-        /* Small utilities */
         .section-title {
             font-size: 28px;
             margin-bottom: 12px;
         }
 
+        .about-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            align-items: start;
+        }
+
+        .about-card {
+            background: var(--card);
+            padding: 22px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 8px 26px rgba(2, 13, 31, 0.28);
+            color: var(--text-primary);
+        }
+
+        .brand-tile {
+            padding: 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(6, 166, 255, 0.06), rgba(138, 73, 255, 0.04));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            min-height: 140px;
+            text-align: center;
+        }
+
         p {
             line-height: 1.6;
-            color: var(--text-secondary);
+            color: var(--muted);
+        }
+
+        /* focus states & accessibility */
+        a:focus,
+        button:focus,
+        select:focus {
+            outline: 3px solid rgba(10, 132, 255, 0.16);
+            outline-offset: 2px;
+        }
+
+        /* subtle footer note */
+        .muted {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 10px;
         }
     </style>
 </head>
 
 <body>
-    <a class="skip-link" href="#mainContent"
-        style="position:absolute;left:8px;top:8px;padding:8px;background:var(--blue-neon);color:#fff;border-radius:6px;z-index:2000;">Skip
-        to content</a>
-
-    <div class="bg-layer" id="bgLayer" aria-hidden="true">
-        <div class="bg-particle"
-            style="width:500px;height:500px;left:6%;top:8%;background:linear-gradient(90deg,var(--blue-neon),transparent);">
-        </div>
-        <div class="bg-particle"
-            style="width:360px;height:360px;right:6%;bottom:6%;background:linear-gradient(90deg,var(--accent),transparent);">
-        </div>
-    </div>
-
     <header>
         <div class="nav-inner container">
             <a href="/index.html" class="brand" aria-label="TechVerse home">
                 <div class="logo-mark" aria-hidden="true">
-                    <img src="/public/ChatGPT Image 21 أكتوبر 2025، 09_35_20 م.png" alt="TechVerse logo">
+                    <img src="/public/logo.svg" alt="TechVerse" style="height:36px;display:block;"
+                        onerror="this.style.display='none'">
                 </div>
                 <div>
                     <h1>TechVerse</h1>
-                    <small data-i18n="brand.tagline">Code • Meetings • Insights</small>
+                    <small id="brandTagline">Code · Meet · Learn</small>
                 </div>
             </a>
 
             <nav id="mainNav" role="navigation" aria-label="Main navigation">
-                <a href="/index.html" data-nav="home"><i data-lucide="home"></i><span
+                <a href="/index.html" data-nav="home"><i data-lucide="home"></i><span class="nav-text"
                         data-i18n="nav.home">Home</span></a>
-                <a href="/public/news.html" data-nav="news"><i data-lucide="newspaper"></i><span
+                <a href="/public/news.html" data-nav="news"><i data-lucide="newspaper"></i><span class="nav-text"
                         data-i18n="nav.news">News</span></a>
-                <a href="/public/meetings.html" data-nav="meet"><i data-lucide="calendar"></i><span
+                <a href="/public/meetings.html" data-nav="meet"><i data-lucide="calendar"></i><span class="nav-text"
                         data-i18n="nav.meetings">Meetings</span></a>
-                <a href="/about.html" class="active" data-nav="about"><i data-lucide="info"></i><span
+                <a href="/about.html" class="active" data-nav="about"><i data-lucide="info"></i><span class="nav-text"
                         data-i18n="nav.about">About</span></a>
-                <a href="/contact.html" data-nav="contact"><i data-lucide="mail"></i><span
+                <a href="/contact.html" data-nav="contact"><i data-lucide="mail"></i><span class="nav-text"
                         data-i18n="nav.contact">Contact</span></a>
-
-                <div class="controls mobile-controls" aria-hidden="true">
-                    <button type="button" id="themeToggleMobile" aria-label="Toggle theme"></button>
-                    <select id="langSelectMobile" aria-label="Select language">
-                        <option value="en">English (EN)</option>
-                        <option value="ar">العربية (AR)</option>
-                    </select>
-                </div>
             </nav>
 
-            <div class="controls desktop-controls">
-                <button type="button" id="themeToggle" aria-label="Toggle theme"><i data-lucide="sun"></i></button>
-                <select id="langSelect" aria-label="Select language">
+            <div class="controls">
+                <button id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><i
+                        data-lucide="sun"></i></button>
+
+                <select id="langSelect" aria-label="Select language"
+                    style="padding:8px;border-radius:8px;background:var(--glass);border:1px solid rgba(255,255,255,0.04);">
                     <option value="en">English (EN)</option>
                     <option value="ar">العربية (AR)</option>
                 </select>
-            </div>
 
-            <button type="button" id="menuToggle" aria-label="Toggle menu" class="mobile-menu-btn"><i
-                    data-lucide="menu"></i></button>
+                <button id="menuToggle" aria-expanded="false" aria-label="Open menu" class="hamburger" title="Menu">
+                    <span class="hamburger-box" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
+                </button>
+            </div>
         </div>
     </header>
 
     <main id="mainContent" class="container" role="main">
         <section class="page-header" data-aos="fade-up">
-            <h1 class="section-title" data-i18n="sections.about">About TechVerse</h1>
-            <p style="max-width:700px;margin:0 auto;">A deep dive into our history, values, and the people driving the
-                future of the platform.</p>
+            <h1 class="section-title" data-i18n="about.title">About TechVerse</h1>
+            <p id="introText" style="max-width:780px;margin:0 auto;" data-i18n="about.intro">TechVerse is a small but
+                passionate community focused on programming, AI, and real-world developer skills.</p>
         </section>
 
         <div class="page-content about-section">
-            <div class="about-card" data-aos="fade-up" data-aos-delay="100">
-                <h2 style="color: var(--blue-neon);">Our Journey</h2>
-                <p>Founded in 2025, TechVerse started as a small community initiative to bridge the gap between academic
-                    research and practical developer application. We've grown into a global hub, hosting hundreds of
-                    meetings and publishing thousands of insights annually.</p>
+            <div class="about-card" data-aos="fade-up" data-aos-delay="120">
+                <h2 style="color:var(--neon);" data-i18n="about.journeyTitle">Our Journey</h2>
+                <p data-i18n="about.journeyBody">Discovered in 2025 by a few friends with a shared curiosity, TechVerse
+                    grew into a small team of around 200 members. We're a young collective who love creativity, critical
+                    thinking, and building practical projects about software, programming languages, and AI.</p>
 
-                <h4><i data-lucide="trophy" style="width:18px;"></i> Commitment to Quality</h4>
-                <p style="font-size:14px;color:var(--text-muted);">Every piece of code and every meeting hosted is
-                    peer-reviewed to ensure the highest standards of technical accuracy and relevance.</p>
+                <h4 style="margin-top:14px;"><i data-lucide="trophy" style="width:18px;"></i> <span
+                        data-i18n="about.commitment">Commitment to Quality</span></h4>
+                <p style="font-size:14px;color:var(--muted);" data-i18n="about.commitmentBody">We aim for practical,
+                    honest content — code samples, tutorials, and meetups where people actually learn and ship.</p>
+
+                <p class="muted" id="teamFacts"></p>
             </div>
 
-            <div class="about-card" data-aos="fade-up" data-aos-delay="200">
-                <h2 style="color: var(--accent);">Our Core Values</h2>
-                <h4><i data-lucide="lightbulb" style="width:18px;"></i> Innovation</h4>
-                <p style="font-size:14px;">We prioritize emerging technologies and futuristic concepts, ensuring our
-                    community stays ahead of the curve.</p>
+            <div class="about-card" data-aos="fade-up" data-aos-delay="220">
+                <h2 style="color:var(--accent);" data-i18n="about.valuesTitle">Our Core Values</h2>
 
-                <h4><i data-lucide="users" style="width:18px;"></i> Community</h4>
-                <p style="font-size:14px;">Tech is a team sport. We foster a welcoming, collaborative, and inclusive
-                    environment for all skill levels.</p>
+                <h4 style="margin-top:12px;"><i data-lucide="lightbulb" style="width:18px;"></i> <span
+                        data-i18n="about.innovation">Innovation</span></h4>
+                <p style="font-size:14px;" data-i18n="about.innovationBody">We prioritize emerging technologies and
+                    hands-on experiments.</p>
 
-                <h4><i data-lucide="shield-check" style="width:18px;"></i> Integrity</h4>
-                <p style="font-size:14px;">Honest reporting and ethical coding practices are at the heart of everything
-                    we do.</p>
+                <h4 style="margin-top:8px;"><i data-lucide="users" style="width:18px;"></i> <span
+                        data-i18n="about.community">Community</span></h4>
+                <p style="font-size:14px;" data-i18n="about.communityBody">We run regular online meetups (via Google
+                    Meet) and collaborative sessions.</p>
+
+                <h4 style="margin-top:8px;"><i data-lucide="shield-check" style="width:18px;"></i> <span
+                        data-i18n="about.integrity">Integrity</span></h4>
+                <p style="font-size:14px;" data-i18n="about.integrityBody">We keep things transparent, simple, and
+                    useful.</p>
             </div>
 
-            <div class="brand-tile" data-aos="fade-up" data-aos-delay="300" data-i18n="about.tile_motto">
-                Code. Create. Connect.
-            </div>
+            <div class="brand-tile" data-aos="fade-up" data-aos-delay="300" data-i18n="about.tile">Code. Create.
+                Connect.</div>
         </div>
     </main>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <script>
-        // THEME + LANGUAGE + NAV SCRIPTS (refactored & robust)
+        /* Inline locales (small fallback) */
+        const LOCALES = {
+            en: {
+                nav: { home: "Home", news: "News", meetings: "Meetings", about: "About", contact: "Contact" },
+                brand: { tagline: "Code · Meet · Learn" },
+                about: {
+                    title: "About TechVerse",
+                    intro: "TechVerse is a small but passionate community focused on programming, AI, and real-world developer skills.",
+                    journeyTitle: "Our Journey",
+                    journeyBody: "Discovered in 2025 by a few friends with a shared curiosity, TechVerse grew into a small team of around 200 members. We're a young collective who love creativity, critical thinking, and building practical projects about software, programming languages, and AI.",
+                    commitment: "Commitment to Quality",
+                    commitmentBody: "We aim for practical, honest content — code samples, tutorials, and meetups where people actually learn and ship.",
+                    valuesTitle: "Our Core Values",
+                    innovation: "Innovation",
+                    innovationBody: "We prioritize emerging tech and hands-on experiments.",
+                    community: "Community",
+                    communityBody: "We run regular online meetups (via Google Meet) and collaborative sessions.",
+                    integrity: "Integrity",
+                    integrityBody: "We keep things transparent, simple, and useful.",
+                    tile: "Code. Create. Connect."
+                }
+            },
+            ar: {
+                nav: { home: "الرئيسية", news: "الأخبار", meetings: "الاجتماعات", about: "من نحن", contact: "اتصل بنا" },
+                brand: { tagline: "الكود • الاجتماعات • التعلم" },
+                about: {
+                    title: "عن TechVerse",
+                    intro: "TechVerse مجموعة صغيرة متحمسة تركز على البرمجة والذكاء الاصطناعي ومهارات المطور العملية.",
+                    journeyTitle: "رحلتنا",
+                    journeyBody: "اكتُشفنا في 2025 على يد شلة أصحاب حبّوا الابتكار والتفكير، وتحولنا لمجموعة حوالي 200 عضو. إحنا شباب بنحب الإبداع وبنشارك محتوى عملي عن التكنولوجيا، لغات البرمجة، ومشاريع بسيطة.",
+                    commitment: "التزام بالجودة",
+                    commitmentBody: "نقدّم محتوى عملي وصريح — شروحات، أمثلة كود، واجتماعات مفيدة يتعلم فيها الناس ويطبقوا.",
+                    valuesTitle: "قيمنا الأساسية",
+                    innovation: "الابتكار",
+                    innovationBody: "نركّز على التقنيات الناشئة والتجارب العملية.",
+                    community: "المجتمع",
+                    communityBody: "بننظم اجتماعات أونلاين عبر Google Meet وجلسات عمل مشتركة.",
+                    integrity: "النزاهة",
+                    integrityBody: "نحافظ على الشفافية والبساطة والجدوى.",
+                    tile: "اكود. اخلق. اتواصل."
+                }
+            }
+        };
 
-        // Theme helpers
+        /* THEME */
         const themeToggle = document.getElementById('themeToggle');
-        const themeToggleMobile = document.getElementById('themeToggleMobile');
-
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
             const icon = theme === 'light' ? 'moon' : 'sun';
-            const buttonText = theme === 'light' ? 'Dark Mode' : 'Light Mode';
-
-            if (themeToggle) {
-                themeToggle.innerHTML = `<i data-lucide="${icon}"></i>`;
-                themeToggle.setAttribute('aria-label', `Switch to ${buttonText}`);
-            }
-            if (themeToggleMobile) {
-                themeToggleMobile.innerHTML = `<i data-lucide="${icon}"></i>`;
-                themeToggleMobile.setAttribute('aria-label', `Switch to ${buttonText}`);
-            }
+            themeToggle.innerHTML = `<i data-lucide="${icon}"></i>`;
             lucide.createIcons();
         }
-
         const savedTheme = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         setTheme(savedTheme);
+        themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
 
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            setTheme(current === 'light' ? 'dark' : 'light');
-        }
-        if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-        if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
-
-        // Language
+        /* i18n (simple apply function) */
         const langSelect = document.getElementById('langSelect');
-        const langSelectMobile = document.getElementById('langSelectMobile');
-
-        async function loadTranslations(lang) {
-            try {
-                const res = await fetch(`/locales/${lang}.json`);
-                if (!res.ok) throw new Error('no locale');
-                const translations = await res.json();
-
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.getAttribute('data-i18n');
-                    const keys = key.split('.');
-                    let value = translations;
-                    keys.forEach(k => { if (value && value.hasOwnProperty(k)) value = value[k]; else value = null; });
-                    if (value) {
-                        const targetEl = el.querySelector('span') || el;
-                        targetEl.textContent = value;
-                    }
-                });
-
-            } catch (err) { console.warn('Failed to load translations:', err); }
+        function applyTranslations(translations) {
+            const q = (sel) => document.querySelector(sel);
+            // nav
+            q('a[data-nav="home"] .nav-text').textContent = translations.nav.home;
+            q('a[data-nav="news"] .nav-text').textContent = translations.nav.news;
+            q('a[data-nav="meet"] .nav-text').textContent = translations.nav.meetings;
+            q('a[data-nav="about"] .nav-text').textContent = translations.nav.about;
+            q('a[data-nav="contact"] .nav-text').textContent = translations.nav.contact;
+            // brand
+            document.getElementById('brandTagline').textContent = translations.brand.tagline;
+            // about region (data-i18n attributes)
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const parts = key.split('.');
+                let val = translations;
+                for (const p of parts) { if (val && Object.prototype.hasOwnProperty.call(val, p)) val = val[p]; else { val = null; break; } }
+                if (val) el.textContent = val;
+            });
+            // dynamic team facts
+            const teamFacts = document.getElementById('teamFacts');
+            if (teamFacts) {
+                if ((document.documentElement.lang || 'en').startsWith('ar')) {
+                    teamFacts.textContent = "اكتُشفنا في 2025، فريق صغير من حوالي 200 عضو. محتوى عملي عن التكنولوجيا ولغات البرمجة، ولقاءات منتظمة عبر Google Meet.";
+                } else {
+                    teamFacts.textContent = "Discovered in 2025 — a small team (~200 members). We share practical content about tech and programming languages, and run regular Google Meet sessions.";
+                }
+            }
+            lucide.createIcons();
         }
 
         function setLanguage(lang) {
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
             localStorage.setItem('lang', lang);
-            loadTranslations(lang);
-            if (langSelect) langSelect.value = lang;
-            if (langSelectMobile) langSelectMobile.value = lang;
-            lucide.createIcons();
+            langSelect.value = lang;
+            const translations = LOCALES[lang] || LOCALES.en;
+            applyTranslations(translations);
         }
-
         const savedLang = localStorage.getItem('lang') || 'en';
         setLanguage(savedLang);
+        langSelect.addEventListener('change', (e) => setLanguage(e.target.value));
 
-        function handleLangChange(e) { setLanguage(e.target.value); }
-        if (langSelect) langSelect.addEventListener('change', handleLangChange);
-        if (langSelectMobile) langSelectMobile.addEventListener('change', handleLangChange);
-
-        // Mobile menu toggle
+        /* MOBILE MENU (hamburger) */
         const menuToggle = document.getElementById('menuToggle');
         const mainNav = document.getElementById('mainNav');
-        if (menuToggle && mainNav) {
-            menuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('open');
-                const icon = menuToggle.querySelector('i');
-                const newIcon = mainNav.classList.contains('open') ? 'x' : 'menu';
-                if (icon) icon.setAttribute('data-lucide', newIcon);
-                lucide.createIcons();
-            });
-        }
-
-        // AOS + Icons init
-        AOS.init({ duration: 800, once: true });
-        lucide.createIcons();
-
-        // Light parallax on brand tile (non-blocking)
-        const tile = document.querySelector('.brand-tile');
-        window.addEventListener('mousemove', (e) => {
-            if (!tile) return;
-            const x = (e.clientX / window.innerWidth) - 0.5;
-            const y = (e.clientY / window.innerHeight) - 0.5;
-            tile.style.transform = `translate(${x * 6}px, ${y * 4}px)`;
+        menuToggle.addEventListener('click', () => {
+            const isOpen = mainNav.classList.toggle('open');
+            menuToggle.classList.toggle('open', isOpen);
+            menuToggle.setAttribute('aria-expanded', String(isOpen));
+            menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
         });
 
-        // Ensure nav 'active' link based on data-nav attr (progressive enhancement)
-        (function highlightActive() {
-            try {
-                const page = document.querySelector('a[data-nav].active') || (() => {
-                    const path = location.pathname.split('/').pop();
-                    const link = document.querySelector(`a[href$="${path}"]`);
-                    if (link) link.classList.add('active');
-                    return null;
-                })();
-            } catch (e) {/* ignore */ }
-        })();
+        /* AOS + lucide init */
+        AOS.init({ duration: 700, once: true });
+        lucide.createIcons();
 
+        /* small keyboard shortcut: Ctrl/Cmd + T = toggle theme */
+        window.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 't' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            }
+        });
     </script>
 </body>
 
