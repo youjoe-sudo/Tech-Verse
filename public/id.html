@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TechVerse — Verify</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#0A1E3F; --bg2:#1B4A7A; --accent:#00D4FF; --gold-1:#FFD700; --muted:#AAB7C4;
+    --card-w:420px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:"Poppins",system-ui,Arial; background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    display:flex;align-items:center;justify-content:center;padding:28px;color:#eaf8ff;
+  }
+
+  .wrap{width:100%;max-width:1100px;}
+  .panel{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+    border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 10px 30px rgba(2,6,23,0.6);
+    display:flex;gap:18px;align-items:flex-start;
+  }
+
+  /* Left: Search */
+  .left{
+    flex:1; display:flex;flex-direction:column;gap:12px;min-height:120px;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:56px;height:56px;border-radius:8px;background:rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
+  .title{font-size:18px;color:var(--accent);font-weight:600}
+  .search-row{display:flex;gap:10px}
+  input.search{
+    flex:1;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+    background:rgba(255,255,255,0.03); color:#eaf8ff; font-size:16px; outline:none;
+  }
+  button.action{
+    background:var(--accent); color:#022; border:0;padding:12px 14px;border-radius:10px;font-weight:700;cursor:pointer;
+  }
+  button.action:active{transform:translateY(1px)}
+  .uploader{display:none} /* external JSON only per request */
+
+  /* Right: Result card only (no extra texts) */
+  .right{width:var(--card-w); display:flex;align-items:center;justify-content:center}
+  .card{
+    width:100%; background: linear-gradient(180deg,#0e2a4b,#123a5d); border-radius:12px; padding:16px; overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.04);
+    display:flex;flex-direction:column; gap:8px;align-items:stretch;
+  }
+  .card .top{display:flex;align-items:center;gap:10px;justify-content:center}
+  .card .logo-small{width:44px;height:44px;border-radius:8px;background:rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700}
+  .card h2{font-family:"Playfair Display",serif;color:#9FE9FF;margin:6px 0 0 0;text-align:center;font-size:16px}
+  .presented{text-align:center;color:#E6F7FF;opacity:.95;font-size:12px}
+  .recipient{font-family:"Great Vibes",cursive;text-align:center;font-size:28px;color:var(--gold-1);text-shadow:0 2px 4px rgba(0,0,0,0.6);margin:4px 0}
+  .desc{font-size:13px;color:var(--muted);text-align:center;line-height:1.35;padding:0 6px}
+  .meta{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:var(--muted);font-size:12px}
+  .meta .id{font-weight:700;color:#fff}
+  .controls-row{display:flex;gap:8px;justify-content:center;margin-top:8px}
+  .btn-min{padding:8px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+  .view{background:rgba(255,255,255,0.95);color:#022}
+  .download{background:rgba(0,0,0,0.12);color:var(--accent);border:1px solid rgba(255,255,255,0.04)}
+  .empty{opacity:0.9; height:210px; display:flex;align-items:center;justify-content:center}
+  /* small responsive */
+  @media (max-width:900px){
+    .panel{flex-direction:column;}
+    .right{width:100%}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel" role="application" aria-label="TechVerse certificate verifier">
+      <div class="left" aria-hidden="false">
+        <div class="brand">
+          <div class="logo">TV</div>
+          <div>
+            <div class="title">TechVerse</div>
+          </div>
+        </div>
+
+        <div class="search-row" style="margin-top:8px">
+          <input id="q" class="search" type="search" placeholder="اكتب Certificate ID" aria-label="certificate id" />
+          <button id="go" class="action" title="ابحث" onclick="alert('يبني هو احنا لسه عملنا حاجه علشان تشوف الشهادات 😔')">Search</button>
+        </div>
+      </div>
+
+      <div class="right" aria-live="polite">
+        <div id="cardWrap" class="card">
+          <div class="empty" id="emptyState"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/*
+  Usage:
+  - Put a file named `certs.json` in the same folder (or change URL below)
+  - certs.json should be an array of objects:
+    [{ "id":"TV-2025-015","name":"...","title":"...","date":"...","desc":"...","image":"https://..." }, ...]
+  - The page fetches that file once on load.
+  - No extra text shown (only the card area).
+*/
+
+const JSON_URL = './data/certs.json'; // change path/URL if needed
+let certificates = [];
+
+// DOM
+const q = document.getElementById('q');
+const go = document.getElementById('go');
+const cardWrap = document.getElementById('cardWrap');
+const emptyState = document.getElementById('emptyState');
+
+function clearCard(){
+  cardWrap.innerHTML = '<div class="empty" id="emptyState"></div>';
+}
+
+function renderItem(it){
+  const imgHtml = it.image ? `<img src="${escapeHTML(it.image)}" alt="" style="width:100%;border-radius:8px;margin-top:8px;object-fit:cover;max-height:160px;">` : '';
+  return `
+    <div class="top">
+      <div class="logo-small">TV</div>
+    </div>
+    <h2>${escapeHTML(it.title || '')}</h2>
+    <div class="presented">Presented to</div>
+    <div class="recipient">${escapeHTML(it.name)}</div>
+    <div style="height:6px;border-bottom:2px solid rgba(255,255,255,0.06);margin:6px 18px;"></div>
+    <div class="desc">${escapeHTML(it.desc || '')}</div>
+    ${imgHtml}
+    <div class="meta">
+      <div><small style="opacity:0.8">Date</small><div class="sid">${escapeHTML(it.date||'')}</div></div>
+      <div style="text-align:left"><small style="opacity:0.8">ID</small><div class="id">${escapeHTML(it.id)}</div></div>
+    </div>
+    <div class="controls-row">
+      <button class="btn-min view" onclick="onView('${encodeURIComponent(it.id)}')">View</button>
+      <button class="btn-min download" onclick="onDownload('${encodeURIComponent(it.id)}')">Download</button>
+    </div>
+  `;
+}
+
+function escapeHTML(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
+
+// fetch external JSON
+async function loadJson(){
+  try{
+    const r = await fetch(JSON_URL, {cache:'no-store'});
+    if(!r.ok) throw new Error('failed');
+    const data = await r.json();
+    if(Array.isArray(data)) certificates = data;
+  }catch(e){
+    certificates = [];
+    // silent failure per request (no extra text)
+  }
+}
+loadJson();
+
+// search
+function searchById(id){
+  if(!id) { clearCard(); return; }
+  const q = id.trim().toLowerCase();
+  const found = certificates.find(c => (c.id||'').toLowerCase() === q);
+  if(found){
+    cardWrap.innerHTML = renderItem(found);
+  } else {
+    // no visual extra text — show nothing (empty)
+    cardWrap.innerHTML = '<div class="empty"></div>';
+  }
+}
+
+// View -> open image if exists else open printable view
+window.onView = function(idEnc){
+  const id = decodeURIComponent(idEnc);
+  const item = certificates.find(c => (c.id||'').toLowerCase() === id.toLowerCase());
+  if(!item) return;
+  if(item.image){
+    window.open(item.image, '_blank');
+    return;
+  }
+  // printable view
+  const html = buildPrintable(item);
+  const w = window.open('', '_blank');
+  if(!w) return;
+  w.document.write(html);
+  w.document.close();
+}
+
+// Download -> if image: download image blob; else download single-item JSON
+window.onDownload = async function(idEnc){
+  const id = decodeURIComponent(idEnc);
+  const item = certificates.find(c => (c.id||'').toLowerCase() === id.toLowerCase());
+  if(!item) return;
+  if(item.image){
+    try{
+      const res = await fetch(item.image);
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      a.href = url;
+      a.download = (item.id || 'certificate') + (blob.type.includes('png') ? '.png' : '.jpg');
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      return;
+    }catch(e){
+      // fallback: download JSON
+    }
+  }
+  // fallback: download JSON
+  const blob = new Blob([JSON.stringify(item, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  a.href = url; a.download = (item.id || 'certificate') + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function buildPrintable(it){
+  const imagePart = it.image ? `<img src="${escapeHTML(it.image)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:12px;">` : '';
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${escapeHTML(it.id)}</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#f7f9fb;color:#111} .wrap{max-width:800px;margin:0 auto;background:#fff;padding:24px;border-radius:8px} h1{font-family: 'Playfair Display', serif;color:#0b355a} .name{font-family:'Great Vibes', cursive;font-size:42px;color:#b8860b}</style></head><body><div class="wrap"><h1>${escapeHTML(it.title||'')}</h1><div class="presented">Presented to</div><div class="name">${escapeHTML(it.name)}</div><p>${escapeHTML(it.desc||'')}</p>${imagePart}<p style="margin-top:18px"><strong>ID:</strong> ${escapeHTML(it.id)} <span style="margin-left:18px"><strong>Date:</strong> ${escapeHTML(it.date||'')}</span></p></div></body></html>`;
+}
+
+// events
+go.addEventListener('click', ()=> searchById(q.value));
+q.addEventListener('keydown', (e)=> { if(e.key==='Enter') searchById(q.value); });
+
+// initial: empty
+clearCard();
+</script>
+</body>
+</html>

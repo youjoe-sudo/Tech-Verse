@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "Home",
+    "news": "News",
+    "meetings": "Meetings",
+    "admin": "Admin"
+  },
+  "hero": {
+    "kicker": "Welcome to",
+    "title": "TechVerse — where code meets the future",
+    "description": "Platform for developers, creators and tech enthusiasts. Join crisp live meetings, catch up on curated tech news, and level up with short guides and practical insights.",
+    "explore": "Explore the Verse",
+    "join": "Join a Meeting",
+    "tag1": "No heavy backend · Static-first",
+    "tag2": "Dark mode native · Smooth UX"
+  },
+  "sections": {
+    "news": "Latest Tech Insights",
+    "meetings": "Upcoming Meetings",
+    "about": "About TechVerse",
+    "aboutText": "TechVerse is a minimalist, static-first platform built to deliver the look and feel of an enterprise-level product without the heavy backend. The site uses JSON-driven content, smooth animations and lightweight integrations to keep performance optimal while giving a premium UX."
+  },
+  "footer": {
+    "copyright": "© TechVerse — All rights reserved.",
+    "tagline": "Built for speed, styled for impact."
+  },
+  "newsPage": {
+    "title": "Latest Tech Insights",
+    "description": "Stay updated with the most recent developments in technology, curated from top sources.",
+    "loadMore": "Load More Articles"
+  },
+  "meetingsPage": {
+    "title": "Upcoming Meetings",
+    "description": "Join live discussions and connect with fellow tech enthusiasts in our scheduled meetings."
+  },
+  "empty": {
+    "noMeetings": "No Upcoming Meetings",
+    "noMeetingsDesc": "Check back later for new meeting schedules. You can also visit our admin panel to add new meetings.",
+    "failedLoad": "Failed to Load",
+    "tryAgain": "Please try refreshing the page."
+  },
+  "buttons": {
+    "viewAllNews": "View All News",
+    "viewAllMeetings": "View All Meetings",
+    "join": "Join Meeting"
+  },
+  "adminPage": {
+    "title": "TechVerse — Admin Dashboard",
+    "adminToken": "Admin Token",
+    "addMeeting": "Add Meeting",
+    "titleLabel": "Title",
+    "whenLabel": "When (human)",
+    "linkLabel": "Link",
+    "addBtn": "Add Meeting",
+    "upcomingMeetings": "Upcoming Meetings",
+    "delete": "Delete"
+  }
+}

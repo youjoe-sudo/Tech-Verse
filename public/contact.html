@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TechVerse — Contact</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/umd/lucide.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #020d1f;
+            --blue-neon: #06a6ff;
+            --accent: #8a49ff;
+            --soft: #9fb7d8;
+            --glass: rgba(255, 255, 255, 0.04);
+            --card: rgba(255, 255, 255, 0.03);
+            --maxw: 1000px;
+            --text-primary: #dbe9ff;
+            --text-secondary: #bcd6ff;
+            --text-muted: #9fc9ff;
+            --whatsap-color: #25D366;
+            --nav-h: 72px;
+        }
+
+        :root[data-theme="light"] {
+            --bg: #f8fafc;
+            --blue-neon: #0ea5e9;
+            --accent: #7c3aed;
+            --soft: #64748b;
+            --glass: rgba(0, 0, 0, 0.04);
+            --card: rgba(0, 0, 0, 0.03);
+            --text-primary: #0f1724;
+            --text-secondary: #334155;
+            --text-muted: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: color .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .3s ease-out; /* Added transform for menu animation */
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            font-family: Poppins, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            -webkit-font-smoothing: antialiased;
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(6, 166, 255, 0.03), transparent), radial-gradient(1000px 500px at 90% 90%, rgba(138, 73, 255, 0.02), transparent), var(--bg);
+            color: var(--text-primary);
+        }
+
+        /* RTL support for layout */
+        html[dir="rtl"] {
+            /* Flip the background gradients for a balanced look */
+            background: radial-gradient(1200px 600px at 90% 10%, rgba(6, 166, 255, 0.03), transparent), radial-gradient(1000px 500px at 10% 90%, rgba(138, 73, 255, 0.02), transparent), var(--bg);
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        main.container {
+            padding-top: calc(var(--nav-h) + 20px);
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: 1000;
+            height: var(--nav-h);
+            background: rgba(2, 13, 31, 0.96);
+            backdrop-filter: blur(18px);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        :root[data-theme="light"] header {
+            background: rgba(248, 250, 252, 0.96);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--blue-neon), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(6, 166, 255, 0.12);
+        }
+
+        .logo-mark img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-family: Orbitron;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .brand small {
+            display: block;
+            font-size: 11px;
+            color: var(--soft);
+        }
+
+        /* --- Desktop Nav & Shared Styles --- */
+
+        nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: var(--soft);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* RTL support for nav icons */
+        html[dir="rtl"] nav a {
+            flex-direction: row-reverse;
+        }
+
+        nav a:hover {
+            background: var(--glass);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        nav a.active {
+            background: linear-gradient(90deg, var(--blue-neon), var(--accent));
+            color: var(--bg);
+        }
+
+        /* RTL active link gradient correction */
+        html[dir="rtl"] nav a.active {
+            background: linear-gradient(-90deg, var(--blue-neon), var(--accent));
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        #themeToggle, #themeToggleMobile,
+        #langSelect, #langSelectMobile,
+        .mobile-menu-btn {
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            color: var(--soft);
+        }
+        
+        :root[data-theme="light"] #themeToggle,
+        :root[data-theme="light"] #themeToggleMobile,
+        :root[data-theme="light"] #langSelect,
+        :root[data-theme="light"] #langSelectMobile,
+        :root[data-theme="light"] .mobile-menu-btn {
+             border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        /* --- Mobile Nav Styles (The Hamburger Menu) --- */
+        
+        /* 1. إخفاء زر الهامبرغر وعناصر التحكم المحمولة على الشاشات الكبيرة */
+        #menuToggle, .mobile-controls {
+            display: none;
+        }
+        
+        /* 2. Media Query for Mobile View */
+        @media (max-width: 980px) {
+
+            /* 2.1. إظهار زر الهامبرغر وإخفاء عناصر التحكم الرئيسية */
+            #menuToggle, .mobile-controls {
+                display: block;
+            }
+            .desktop-controls, nav#mainNav {
+                display: none;
+            }
+            .nav-inner {
+                padding: 0 16px; /* مسافة داخلية أفضل على الهاتف */
+            }
+            
+            /* 2.2. تحويل قائمة التنقل إلى قائمة عمودية مخفية */
+            nav#mainNav {
+                position: absolute;
+                top: var(--nav-h); /* أسفل الهيدر مباشرة */
+                left: 0;
+                right: 0;
+                
+                display: flex;
+                flex-direction: column; /* ترتيب العناصر عمودياً */
+                gap: 0;
+                
+                background: var(--bg);
+                backdrop-filter: blur(16px);
+                border-top: 1px solid rgba(255, 255, 255, 0.04);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+                
+                /* حالة الإخفاء الافتراضية */
+                transform: translateY(-100%);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+                z-index: 999;
+                
+                padding: 12px 20px 24px 20px;
+                height: calc(100vh - var(--nav-h)); /* تأكد أن القائمة تغطي الشاشة */
+                overflow-y: auto; /* للسماح بالتمرير إذا كانت القائمة طويلة */
+            }
+            
+            /* حالة الإظهار */
+            nav#mainNav.open {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            
+            /* تنسيق روابط القائمة */
+            nav#mainNav a {
+                width: 100%;
+                padding: 12px 16px;
+                margin: 4px 0;
+                justify-content: flex-start; /* محاذاة لليسار */
+            }
+            
+            html[dir="rtl"] nav#mainNav a {
+                 justify-content: flex-end; /* محاذاة لليمين في RTL */
+            }
+            
+            /* تنسيق عناصر التحكم المحمولة (داخل القائمة) */
+            .mobile-controls {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+            .mobile-controls #themeToggleMobile, .mobile-controls #langSelectMobile {
+                width: 48%; /* تقسيم المساحة بين الزر والقائمة */
+            }
+        }
+
+
+        /* Page header */
+        .page-hero {
+            padding: 64px 0 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .page-hero h2 {
+            font-family: Orbitron;
+            margin: 0;
+            font-size: 34px;
+            color: var(--text-primary);
+        }
+
+        .page-hero p {
+            margin: 0;
+            color: var(--text-secondary);
+            max-width: 820px;
+        }
+
+        /* Contact layout */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 28px;
+            align-items: start;
+            margin-top: 28px;
+        }
+
+        @media (max-width:980px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+        }
+
+        :root[data-theme="light"] .card {
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            font-size: 15px;
+            margin-top: 4px; 
+            margin-bottom: 8px;
+        }
+
+        :root[data-theme="light"] .contact-form input,
+        :root[data-theme="light"] .contact-form textarea {
+            border: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .contact-form textarea {
+            min-height: 160px;
+            resize: vertical;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-top: 8px;
+        }
+
+        .contact-form label:first-of-type {
+            margin-top: 0;
+        }
+
+
+        .contact-side {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+
+        /* RTL support for meta items */
+        html[dir="rtl"] .meta-item {
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--blue-neon), var(--accent));
+            color: var(--bg);
+            font-weight: 700;
+            border: none;
+        }
+
+        html[dir="rtl"] .btn-primary {
+            background: linear-gradient(-90deg, var(--blue-neon), var(--accent));
+        }
+
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            color: var(--soft);
+            margin-top: 40px;
+        }
+
+        :root[data-theme="light"] footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        /* small helpers */
+        .small-muted {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-inner container">
+            <a href="index.html" class="brand">
+                <div class="logo-mark">
+                    <svg data-lucide="zap" color="white" width="24" height="24"></svg>
+                </div>
+                <div>
+                    <h1>TechVerse</h1>
+                    <small>Code • Meetings • Insights</small>
+                </div>
+            </a>
+
+            <nav id="mainNav">
+                <a href="index.html"><i data-lucide="home"></i> Home</a>
+                <a href="news.html"><i data-lucide="newspaper"></i> News</a>
+                <a href="meetings.html"><i data-lucide="calendar"></i> Meetings</a>
+                <a href="contact.html" class="active"><i data-lucide="mail"></i> Contact</a>
+
+                <div class="controls mobile-controls">
+                    <button id="themeToggleMobile" aria-label="Toggle theme"></button>
+                    <select id="langSelectMobile" aria-label="Select language">
+                        <option value="en">EN</option>
+                        <option value="ar">AR</option>
+                    </select>
+                </div>
+            </nav>
+
+            <div class="controls desktop-controls">
+                <button id="themeToggle" aria-label="Toggle theme"><i data-lucide="sun"></i></button>
+                <select id="langSelect" aria-label="Select language">
+                    <option value="en">EN</option>
+                    <option value="ar">AR</option>
+                </select>
+            </div>
+            
+            <button id="menuToggle" aria-label="Toggle menu" class="mobile-menu-btn"><i data-lucide="menu"></i></button>
+        </div>
+    </header>
+
+    <main class="container" role="main">
+        <section class="page-hero" data-aos="fade-up">
+            <div>
+                <h2>Get in Touch</h2>
+                <p class="small-muted">Have an idea, want to collab, or need support? Drop a message — we save it to
+                    your server (and can email you notifications).</p>
+            </div>
+        </section>
+
+        <section class="contact-grid" data-aos="fade-up">
+            <div class="card contact-form">
+                <form id="contactForm" autocomplete="on">
+                    <label for="nameInput" class="small-muted">Name</label>
+                    <input type="text" id="nameInput" name="name" placeholder="Your name" required>
+
+                    <label for="emailInput" class="small-muted">Email</label>
+                    <input type="email" id="emailInput" name="email" placeholder="you@example.com" required>
+
+                    <label for="phoneInput" class="small-muted">Phone (WhatsApp)</label>
+                    <input type="tel" id="phoneInput" name="phone" placeholder="0123456789">
+
+                    <label for="messageInput" class="small-muted">Message</label>
+                    <textarea id="messageInput" name="message" placeholder="Tell us what's up..." required></textarea>
+
+                    <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                        <div id="contactStatus" class="small-muted"></div>
+                    </div>
+                </form>
+            </div>
+
+            <aside class="contact-side">
+                <div class="card">
+                    <h4 style="margin:0 0 8px 0">Contact Info</h4>
+                    <div class="contact-meta">
+                        <div class="meta-item"><i data-lucide="mail"></i>
+                            <div>mohamed.a.a.fatah2010@gmail.com</div>
+                        </div>
+                        <div class="meta-item"><i data-lucide="smartphone"></i>
+                            <div>+20 128 553 6282</div>
+                        </div>
+                        <div class="meta-item"><i data-lucide="map-pin"></i>
+                            <div>Egypt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card small-muted">
+                    <strong>Hours:</strong> Sun–Fri, 10:00 — 19:00 (GMT+2)<br>
+                    <strong>Response time:</strong> usually within 24 hours.
+                </div>
+
+                <div class="card">
+                    <h4 style="margin:0 0 8px 0">Social</h4>
+                    <div style="display:flex;gap:12px;align-items:center">
+                        <a href="https://github.com/youjoe-sudo" target="_blank"
+                            style="color:var(--blue-neon);text-decoration:none"><i data-lucide="github"></i> GitHub</a>
+                        <a href="https://www.facebook.com/profile.php?id=61582696474944" target="_blank"
+                            style="color:var(--accent);text-decoration:none"><i data-lucide="facebook"></i> Facebook</a>
+                            <a href="https://whatsapp.com/channel/0029VbBfBw6BVJkvQj6epc0P" target="_blank"
+                            style="color:var(--whatsap-color);text-decoration:none"><i data-lucide="WhatsApp"></i> WhatsApp</a>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <footer>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+                <div>© <strong>TechVerse</strong> — All rights reserved.</div>
+                <div style="color:var(--soft)">Built for speed, styled for impact.</div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        // init UI libs
+        AOS.init({ duration: 700, once: true, easing: 'ease-out-cubic' });
+        lucide.createIcons();
+
+        const html = document.documentElement;
+        
+        // --- Theme Controls ---
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+
+        function updateThemeButton(toggleBtn) {
+            if (!toggleBtn) return;
+            toggleBtn.innerHTML = (html.getAttribute('data-theme') === 'light') ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+        }
+        
+        function updateThemeButtons() {
+            updateThemeButton(themeToggle);
+            updateThemeButton(themeToggleMobile);
+            lucide.createIcons(); // Re-render icons after changing innerHTML
+        }
+        updateThemeButtons(); 
+
+        function handleThemeToggle() {
+            const newTheme = (html.getAttribute('data-theme') === 'light') ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButtons();
+        }
+
+        themeToggle.addEventListener('click', handleThemeToggle);
+        if(themeToggleMobile) themeToggleMobile.addEventListener('click', handleThemeToggle);
+
+
+        // --- Language Controls ---
+        const langSelect = document.getElementById('langSelect');
+        const langSelectMobile = document.getElementById('langSelectMobile');
+        const savedLang = localStorage.getItem('lang') || 'en';
+        
+        function setLanguage(l) {
+            localStorage.setItem('lang', l);
+            html.lang = l;
+            html.dir = l === 'ar' ? 'rtl' : 'ltr';
+            
+            // Sync the dropdowns
+            if(langSelect) langSelect.value = l;
+            if(langSelectMobile) langSelectMobile.value = l;
+        }
+        
+        // Apply saved language/direction on load
+        setLanguage(savedLang); 
+
+        // Event listeners for both dropdowns
+        if(langSelect) langSelect.addEventListener('change', (e) => setLanguage(e.target.value));
+        if(langSelectMobile) langSelectMobile.addEventListener('change', (e) => setLanguage(e.target.value));
+
+
+        // --- Mobile Menu Toggle ---
+        const menuToggle = document.getElementById('menuToggle');
+        const mainNav = document.getElementById('mainNav');
+
+        menuToggle.addEventListener('click', () => {
+            const isOpened = mainNav.classList.toggle('open');
+            
+            // Toggle icon (menu <-> x)
+            menuToggle.innerHTML = isOpened ? '<i data-lucide="x"></i>' : '<i data-lucide="menu"></i>';
+            lucide.createIcons();
+            
+            // Prevent scrolling when the menu is open
+            document.body.style.overflowY = isOpened ? 'hidden' : 'auto';
+        });
+
+        // --- Contact Form Submit (SIMULATION) ---
+        const contactForm = document.getElementById('contactForm');
+        const contactStatus = document.getElementById('contactStatus');
+
+        contactForm.addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            
+            // Basic form validation (should be caught by 'required' attributes, but good practice)
+            if (!contactForm.name.value.trim() || !contactForm.email.value.trim() || !contactForm.message.value.trim()) {
+                 contactStatus.style.color = 'crimson';
+                 contactStatus.textContent = 'Please fill all required fields.';
+                 return;
+            }
+
+            contactStatus.style.color = '';
+            contactStatus.textContent = 'Sending...';
+            
+            // Simulate network delay and success
+            await new Promise(resolve => setTimeout(resolve, 800)); // 800ms delay
+
+            // Successful Simulation
+            contactStatus.style.color = 'var(--blue-neon)';
+            contactStatus.textContent = 'Thanks — message received (Simulated).';
+            
+            // Hide the message after a few seconds
+            setTimeout(() => {
+                contactStatus.textContent = '';
+            }, 5000);
+            
+            contactForm.reset();
+        });
+
+        // ensure icons are re-rendered after DOM interactions
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

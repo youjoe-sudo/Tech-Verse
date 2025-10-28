@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TechVerse Admin</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#020d1f;color:#dbe9ff}
+    .box{background:rgba(255,255,255,0.03);padding:18px;border-radius:10px;margin-bottom:12px}
+    input,textarea{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    button{padding:10px 14px;border-radius:8px;border:0;background:#06a6ff;color:#021127;font-weight:600;cursor:pointer}
+    .meet{display:flex;justify-content:space-between;gap:12px;padding:8px;border-bottom:1px solid rgba(255,255,255,0.02)}
+  </style>
+</head>
+<body>
+  <h2 data-i18n="adminPage.title">TechVerse — Admin Dashboard</h2>
+  <div class="box">
+    <label data-i18n="adminPage.adminToken">Admin Token</label>
+    <input id="token" placeholder="paste admin token here">
+  </div>
+
+  <div class="box">
+    <h3 data-i18n="adminPage.addMeeting">Add Meeting</h3>
+    <label data-i18n="adminPage.titleLabel">Title</label>
+    <input id="title">
+    <label data-i18n="adminPage.whenLabel">When (human)</label>
+    <input id="when">
+    <label data-i18n="adminPage.linkLabel">Link</label>
+    <input id="link">
+    <div style="margin-top:10px"><button id="addBtn" data-i18n="adminPage.addBtn">Add Meeting</button></div>
+  </div>
+
+  <div class="box">
+    <h3 data-i18n="adminPage.upcomingMeetings">Upcoming Meetings</h3>
+    <div id="list"></div>
+  </div>
+
+  <script>
+    const listEl = document.getElementById('list');
+    async function load(){
+      const res = await fetch('/api/meetings');
+      const data = await res.json();
+      listEl.innerHTML = data.items.map(i=>`<div class="meet"><div><strong>${i.title}</strong><div style="font-size:12px;color:#9fb7d8">${i.when}</div></div><div><button onclick="del(${i.id})" data-i18n="adminPage.delete">Delete</button></div></div>`).join('')
+    }
+    async function del(id){
+      const token = document.getElementById('token').value;
+      if(!confirm('Delete meeting?')) return;
+      await fetch('/api/meetings/'+id,{method:'DELETE',headers:{'x-admin-token':token}});
+      load();
+    }
+
+    // Language switcher for admin page
+    const savedLang = localStorage.getItem('lang') || 'en';
+    document.documentElement.lang = savedLang;
+    document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+
+    async function loadTranslations(lang) {
+      try {
+        const res = await fetch(`/locales/${lang}.json`);
+        const translations = await res.json();
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          const keys = key.split('.');
+          let value = translations;
+          keys.forEach(k => value = value[k]);
+          if (value) el.textContent = value;
+        });
+      } catch (err) {
+        console.error('Failed to load translations:', err);
+      }
+    }
+
+    loadTranslations(savedLang);
+    document.getElementById('addBtn').addEventListener('click', async ()=>{
+      const token = document.getElementById('token').value;
+      const title = document.getElementById('title').value;
+      const when = document.getElementById('when').value;
+      const link = document.getElementById('link').value;
+      const res = await fetch('/api/meetings',{method:'POST',headers:{'content-type':'application/json','x-admin-token':token},body:JSON.stringify({title,when,link})});
+      if(res.ok){document.getElementById('title').value='';document.getElementById('when').value='';document.getElementById('link').value='';load();}
+      else{alert('Failed to add meeting')}
+    });
+    load();
+  </script>
+</body>
+</html>
