@@ -569,7 +569,7 @@
     <header>
         <div class="nav-inner container">
             <a href="#home" class="brand">
-                <div class="logo-mark"><img src="/public/ChatGPT Image 21 أكتوبر 2025، 09_35_20 م.png"
+                <div class="logo-mark"><img src="/public/logo.png"
                         alt="TechVerse Logo"></div>
                 <div>
                     <h1>TechVerse</h1>
@@ -694,21 +694,11 @@
 
         <section id="contact" data-aos="fade-up">
             <h3 class="section-title" data-i18n="sections.contact">Get in Touch</h3>
-            <form class="contact-form" id="contactForm">
-                <label data-i18n="contact.name_label" for="name">Your Name</label>
-                <input type="text" id="name" name="name" data-i18n-placeholder="contact.name_placeholder"
-                    placeholder="Your Name" required>
-
-                <label data-i18n="contact.email_label" for="email" style="margin-top: 20px;">Your Email</label>
-                <input type="email" id="email" name="email" placeholder="you@example.com" required>
-
-                <label data-i18n="contact.message_label" for="message" style="margin-top: 20px;">Message</label>
-                <textarea id="message" name="message" rows="5" placeholder="How can we help you?" required></textarea>
-
-                <button type="submit" class="btn" style="width: 100%; margin-top: 25px;"><span
-                        data-i18n="contact.send_button">Send Message</span></button>
-                <div id="contactStatus" style="text-align: center; margin-top: 10px;"></div>
-            </form>
+            <div class="contact-form" style="text-align: center; padding: 30px;">
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">The contact form is currently broken.</p>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Please use our dedicated contact page to send your message:</p>
+                <a href="/contact.html" class="btn">Go to Contact Page</a>
+            </div>
         </section>
 
         <footer>
@@ -893,6 +883,7 @@
                 const formData = {
                     name: contactForm.name.value,
                     email: contactForm.email.value,
+                    phone: contactForm.phone.value,
                     message: contactForm.message.value
                 };
 

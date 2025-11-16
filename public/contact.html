@@ -628,13 +628,13 @@
             document.body.style.overflowY = isOpened ? 'hidden' : 'auto';
         });
 
-        // --- Contact Form Submit (SIMULATION) ---
+        // --- Contact Form Submit ---
         const contactForm = document.getElementById('contactForm');
         const contactStatus = document.getElementById('contactStatus');
 
         contactForm.addEventListener('submit', async (ev) => {
             ev.preventDefault();
-            
+
             // Basic form validation (should be caught by 'required' attributes, but good practice)
             if (!contactForm.name.value.trim() || !contactForm.email.value.trim() || !contactForm.message.value.trim()) {
                  contactStatus.style.color = 'crimson';
@@ -644,20 +644,41 @@
 
             contactStatus.style.color = '';
             contactStatus.textContent = 'Sending...';
-            
-            // Simulate network delay and success
-            await new Promise(resolve => setTimeout(resolve, 800)); // 800ms delay
 
-            // Successful Simulation
-            contactStatus.style.color = 'var(--blue-neon)';
-            contactStatus.textContent = 'Thanks — message received (Simulated).';
-            
+            try {
+                const formData = {
+                    name: contactForm.name.value.trim(),
+                    email: contactForm.email.value.trim(),
+                    phone: contactForm.phone.value.trim(),
+                    message: contactForm.message.value.trim(),
+                    timestamp: new Date().toISOString()
+                };
+
+                const response = await fetch('/api/contacts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    contactStatus.style.color = 'var(--blue-neon)';
+                    contactStatus.textContent = 'Thanks — message received! We\'ll get back to you soon.';
+                    contactForm.reset();
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Contact form error:', error);
+                contactStatus.style.color = 'crimson';
+                contactStatus.textContent = 'Failed to send message. Please try again.';
+            }
+
             // Hide the message after a few seconds
             setTimeout(() => {
                 contactStatus.textContent = '';
             }, 5000);
-            
-            contactForm.reset();
         });
 
         // ensure icons are re-rendered after DOM interactions

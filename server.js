@@ -97,14 +97,14 @@ app.get('/api/meetings', (req, res) => {
 });
 
 // POST: Contact Form Submission (using Nodemailer for a real app, here simulated)
-app.post('/api/contact', (req, res) => {
-  const { name, email, message } = req.body;
+app.post('/api/contacts', (req, res) => {
+  const { name, email, phone, message } = req.body;
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   const contacts = readJson(CONTACTS_FILE);
-  contacts.contacts.push({ name, email, message, timestamp: new Date().toISOString() });
+  contacts.contacts.push({ name, email, phone, message, timestamp: new Date().toISOString() });
   writeJson(CONTACTS_FILE, contacts);
 
   // Simulation of a successful email send
@@ -115,7 +115,7 @@ app.post('/api/contact', (req, res) => {
 app.post('/api/meetings', (req, res) => {
   const adminToken = req.header('x-admin-token');
   // Simple mock token check
-  if (adminToken !== 'SUPER_SECURE_TOKEN_123') {
+  if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
     return res.status(403).json({ error: 'Invalid admin token' });
   }
 
@@ -129,6 +129,84 @@ app.post('/api/meetings', (req, res) => {
   writeJson(MEET_FILE, meetings);
 
   res.status(201).json({ success: true, message: 'Meeting added.' });
+});
+
+// DELETE: Meetings deletion (Admin only)
+app.delete('/api/meetings/:id', (req, res) => {
+  const adminToken = req.header('x-admin-token');
+  if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
+    return res.status(403).json({ error: 'Invalid admin token' });
+  }
+
+  const id = parseInt(req.params.id);
+  const meetings = readJson(MEET_FILE);
+  meetings.items = meetings.items.filter(m => m.id !== id);
+  writeJson(MEET_FILE, meetings);
+
+  res.json({ success: true, message: 'Meeting deleted.' });
+});
+
+// POST: News creation (Admin only)
+app.post('/api/news', (req, res) => {
+  const adminToken = req.header('x-admin-token');
+  if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
+    return res.status(403).json({ error: 'Invalid admin token' });
+  }
+
+  const { title, description, link } = req.body;
+  if (!title || !description || !link) {
+    return res.status(400).json({ error: 'Missing news details' });
+  }
+
+  const news = readJson(NEWS_FILE);
+  news.items.push({ id: Date.now(), title, description, link, date: new Date().toISOString().split('T')[0] });
+  writeJson(NEWS_FILE, news);
+
+  res.status(201).json({ success: true, message: 'News added.' });
+});
+
+// DELETE: News deletion (Admin only)
+app.delete('/api/news/:id', (req, res) => {
+  const adminToken = req.header('x-admin-token');
+  if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
+    return res.status(403).json({ error: 'Invalid admin token' });
+  }
+
+  const id = parseInt(req.params.id);
+  const news = readJson(NEWS_FILE);
+  news.items = news.items.filter(n => n.id !== id);
+  writeJson(NEWS_FILE, news);
+
+  res.json({ success: true, message: 'News deleted.' });
+});
+
+// GET: Contacts (Admin only)
+app.get('/api/contacts', (req, res) => {
+  const adminToken = req.header('x-admin-token');
+  if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
+    return res.status(403).json({ error: 'Invalid admin token' });
+  }
+
+  const contacts = readJson(CONTACTS_FILE);
+  res.json(contacts);
+});
+
+// DELETE: Contacts deletion (Admin only)
+app.delete('/api/contacts/:index', (req, res) => {
+  const adminToken = req.header('x-admin-token');
+  if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
+    return res.status(403).json({ error: 'Invalid admin token' });
+  }
+
+  const index = parseInt(req.params.index);
+  const contacts = readJson(CONTACTS_FILE);
+  if (index >= 0 && index < contacts.contacts.length) {
+    contacts.contacts.splice(index, 1);
+    writeJson(CONTACTS_FILE, contacts);
+    res.json({ success: true, message: 'Contact deleted.' });
+  } else {
+    res.status(404).json({ error: 'Contact not found.' });
+  }
 });
 
 

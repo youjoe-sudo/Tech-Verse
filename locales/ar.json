@@ -47,12 +47,29 @@
   "adminPage": {
     "title": "TechVerse — لوحة الإدارة",
     "adminToken": "رمز الإدارة",
+    "validateToken": "التحقق من الرمز",
+    "tokenValid": "الرمز صحيح! جاري تحميل البيانات...",
+    "tokenInvalid": "رمز غير صحيح. يرجى التحقق وإعادة المحاولة.",
     "addMeeting": "إضافة اجتماع",
     "titleLabel": "العنوان",
     "whenLabel": "متى (بشكل بشري)",
     "linkLabel": "الرابط",
     "addBtn": "إضافة اجتماع",
     "upcomingMeetings": "الاجتماعات القادمة",
-    "delete": "حذف"
+    "delete": "حذف",
+    "addNews": "إضافة خبر",
+    "newsTitleLabel": "العنوان",
+    "newsDescriptionLabel": "الوصف",
+    "newsLinkLabel": "الرابط",
+    "addNewsBtn": "إضافة خبر",
+    "latestNews": "أحدث الأخبار",
+    "contacts": "التواصل",
+    "noContacts": "لا توجد رسائل تواصل بعد.",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "message": "الرسالة",
+    "timestamp": "التاريخ والوقت",
+    "deleteContact": "حذف"
   }
 }

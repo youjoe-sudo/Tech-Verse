@@ -1,55 +1,365 @@
 <!doctype html>
-<html>
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TechVerse Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/umd/lucide.css">
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#020d1f;color:#dbe9ff}
-    .box{background:rgba(255,255,255,0.03);padding:18px;border-radius:10px;margin-bottom:12px}
-    input,textarea{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-    button{padding:10px 14px;border-radius:8px;border:0;background:#06a6ff;color:#021127;font-weight:600;cursor:pointer}
-    .meet{display:flex;justify-content:space-between;gap:12px;padding:8px;border-bottom:1px solid rgba(255,255,255,0.02)}
+    :root {
+      --bg: #020d1f;
+      --blue-neon: #06a6ff;
+      --accent: #8a49ff;
+      --soft: #9fb7d8;
+      --glass: rgba(255, 255, 255, 0.04);
+      --card: rgba(255, 255, 255, 0.03);
+      --text-primary: #dbe9ff;
+      --text-secondary: #bcd6ff;
+      --text-muted: #9fc9ff;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(1200px 600px at 70% 20%, rgba(6, 166, 255, 0.02), transparent),
+                  radial-gradient(1000px 500px at 30% 80%, rgba(138, 73, 255, 0.02), transparent),
+                  var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    html[dir="rtl"] body {
+      background: radial-gradient(1200px 600px at 30% 20%, rgba(6, 166, 255, 0.02), transparent),
+                  radial-gradient(1000px 500px at 70% 80%, rgba(138, 73, 255, 0.02), transparent),
+                  var(--bg);
+    }
+
+    h1, h2, h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      color: var(--blue-neon);
+      text-shadow: 0 0 10px rgba(6, 166, 255, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .token-section {
+      background: var(--card);
+      border: 1px solid var(--glass);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .token-section label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .token-input-container {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .token-section input {
+      flex: 1;
+      min-width: 250px;
+      max-width: 350px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--glass);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+    }
+
+    .token-section input:focus {
+      outline: none;
+      border-color: var(--blue-neon);
+      box-shadow: 0 0 5px rgba(6, 166, 255, 0.5);
+    }
+
+    .token-status {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .token-status.show {
+      opacity: 1;
+    }
+
+    .token-status.valid {
+      background: rgba(46, 204, 113, 0.1);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .token-status.invalid {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--glass);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .section h3 {
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section h3 i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--glass);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--blue-neon);
+      box-shadow: 0 0 5px rgba(6, 166, 255, 0.5);
+    }
+
+    .btn {
+      background-color: var(--blue-neon);
+      color: var(--bg);
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn:hover {
+      background-color: var(--accent);
+    }
+
+    .list {
+      margin-top: 20px;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--glass);
+      transition: var(--transition);
+    }
+
+    .list-item:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .list-item-content {
+      flex: 1;
+    }
+
+    .list-item-content strong {
+      display: block;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .list-item-content .meta {
+      font-size: 12px;
+      color: var(--soft);
+    }
+
+    .list-item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-delete {
+      background: #ff4757;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      transition: var(--transition);
+    }
+
+    .btn-delete:hover {
+      background: #ff3742;
+    }
+
+    .no-items {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 20px;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .sections {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .token-section input {
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2 data-i18n="adminPage.title">TechVerse — Admin Dashboard</h2>
-  <div class="box">
-    <label data-i18n="adminPage.adminToken">Admin Token</label>
-    <input id="token" placeholder="paste admin token here">
+  <div class="container">
+    <div class="header">
+      <h1 data-i18n="adminPage.title">TechVerse — Admin Dashboard</h1>
+    </div>
+
+    <div class="token-section">
+      <label data-i18n="adminPage.adminToken">Admin Token</label>
+      <div class="token-input-container">
+        <input id="token" placeholder="paste admin token here" type="password">
+        <button id="validateTokenBtn" class="btn" data-i18n="adminPage.validateToken">Validate Token</button>
+      </div>
+      <div id="tokenStatus" class="token-status"></div>
+    </div>
+
+    <div class="sections">
+      <!-- Meetings Section -->
+      <div class="section">
+        <h3 data-i18n="adminPage.addMeeting"><i data-lucide="calendar-plus"></i>Add Meeting</h3>
+        <div class="form-group">
+          <label data-i18n="adminPage.titleLabel">Title</label>
+          <input id="meetingTitle" type="text">
+        </div>
+        <div class="form-group">
+          <label data-i18n="adminPage.whenLabel">When (human)</label>
+          <input id="meetingWhen" type="text">
+        </div>
+        <div class="form-group">
+          <label data-i18n="adminPage.linkLabel">Link</label>
+          <input id="meetingLink" type="url">
+        </div>
+        <button id="addMeetingBtn" class="btn" data-i18n="adminPage.addBtn">Add Meeting</button>
+
+        <div class="list">
+          <h4 data-i18n="adminPage.upcomingMeetings">Upcoming Meetings</h4>
+          <div id="meetingsList"></div>
+        </div>
+      </div>
+
+      <!-- News Section -->
+      <div class="section">
+        <h3 data-i18n="adminPage.addNews"><i data-lucide="newspaper-plus"></i>Add News</h3>
+        <div class="form-group">
+          <label data-i18n="adminPage.newsTitleLabel">Title</label>
+          <input id="newsTitle" type="text">
+        </div>
+        <div class="form-group">
+          <label data-i18n="adminPage.newsDescriptionLabel">Description</label>
+          <textarea id="newsDescription" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label data-i18n="adminPage.newsLinkLabel">Link</label>
+          <input id="newsLink" type="url">
+        </div>
+        <button id="addNewsBtn" class="btn" data-i18n="adminPage.addNewsBtn">Add News</button>
+
+        <div class="list">
+          <h4 data-i18n="adminPage.latestNews">Latest News</h4>
+          <div id="newsList"></div>
+        </div>
+      </div>
+
+      <!-- Contacts Section -->
+      <div class="section">
+        <h3 data-i18n="adminPage.contacts"><i data-lucide="mail"></i>Contacts</h3>
+        <div id="contactsList"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="box">
-    <h3 data-i18n="adminPage.addMeeting">Add Meeting</h3>
-    <label data-i18n="adminPage.titleLabel">Title</label>
-    <input id="title">
-    <label data-i18n="adminPage.whenLabel">When (human)</label>
-    <input id="when">
-    <label data-i18n="adminPage.linkLabel">Link</label>
-    <input id="link">
-    <div style="margin-top:10px"><button id="addBtn" data-i18n="adminPage.addBtn">Add Meeting</button></div>
-  </div>
-
-  <div class="box">
-    <h3 data-i18n="adminPage.upcomingMeetings">Upcoming Meetings</h3>
-    <div id="list"></div>
-  </div>
-
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script>
-    const listEl = document.getElementById('list');
-    async function load(){
-      const res = await fetch('/api/meetings');
-      const data = await res.json();
-      listEl.innerHTML = data.items.map(i=>`<div class="meet"><div><strong>${i.title}</strong><div style="font-size:12px;color:#9fb7d8">${i.when}</div></div><div><button onclick="del(${i.id})" data-i18n="adminPage.delete">Delete</button></div></div>`).join('')
-    }
-    async function del(id){
-      const token = document.getElementById('token').value;
-      if(!confirm('Delete meeting?')) return;
-      await fetch('/api/meetings/'+id,{method:'DELETE',headers:{'x-admin-token':token}});
-      load();
-    }
-
-    // Language switcher for admin page
+    // Language setup
     const savedLang = localStorage.getItem('lang') || 'en';
     document.documentElement.lang = savedLang;
     document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
@@ -71,16 +381,270 @@
     }
 
     loadTranslations(savedLang);
-    document.getElementById('addBtn').addEventListener('click', async ()=>{
-      const token = document.getElementById('token').value;
-      const title = document.getElementById('title').value;
-      const when = document.getElementById('when').value;
-      const link = document.getElementById('link').value;
-      const res = await fetch('/api/meetings',{method:'POST',headers:{'content-type':'application/json','x-admin-token':token},body:JSON.stringify({title,when,link})});
-      if(res.ok){document.getElementById('title').value='';document.getElementById('when').value='';document.getElementById('link').value='';load();}
-      else{alert('Failed to add meeting')}
-    });
-    load();
+
+    // Utility functions
+    function getToken() {
+      return document.getElementById('token').value;
+    }
+
+    function clearForm(...ids) {
+      ids.forEach(id => document.getElementById(id).value = '');
+    }
+
+    // Meetings functions
+    async function loadMeetings() {
+      try {
+        const res = await fetch('/api/meetings');
+        const data = await res.json();
+        const listEl = document.getElementById('meetingsList');
+        if (data.items.length === 0) {
+          listEl.innerHTML = '<div class="no-items">No meetings yet.</div>';
+        } else {
+          listEl.innerHTML = data.items.map(item => `
+            <div class="list-item">
+              <div class="list-item-content">
+                <strong>${item.title}</strong>
+                <div class="meta">${item.when}</div>
+              </div>
+              <div class="list-item-actions">
+                <button class="btn-delete" onclick="deleteMeeting(${item.id})" data-i18n="adminPage.delete">Delete</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load meetings:', err);
+      }
+    }
+
+    async function addMeeting() {
+      const token = getToken();
+      const title = document.getElementById('meetingTitle').value;
+      const when = document.getElementById('meetingWhen').value;
+      const link = document.getElementById('meetingLink').value;
+
+      if (!title || !when || !link) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/meetings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-token': token
+          },
+          body: JSON.stringify({ title, when, link })
+        });
+
+        if (res.ok) {
+          clearForm('meetingTitle', 'meetingWhen', 'meetingLink');
+          loadMeetings();
+        } else {
+          alert('Failed to add meeting');
+        }
+      } catch (err) {
+        alert('Error adding meeting');
+      }
+    }
+
+    async function deleteMeeting(id) {
+      const token = getToken();
+      if (!confirm('Delete this meeting?')) return;
+
+      try {
+        await fetch(`/api/meetings/${id}`, {
+          method: 'DELETE',
+          headers: { 'x-admin-token': token }
+        });
+        loadMeetings();
+      } catch (err) {
+        alert('Error deleting meeting');
+      }
+    }
+
+    // News functions
+    async function loadNews() {
+      try {
+        const res = await fetch('/api/news');
+        const data = await res.json();
+        const listEl = document.getElementById('newsList');
+        if (data.items.length === 0) {
+          listEl.innerHTML = '<div class="no-items">No news yet.</div>';
+        } else {
+          listEl.innerHTML = data.items.map(item => `
+            <div class="list-item">
+              <div class="list-item-content">
+                <strong>${item.title}</strong>
+                <div class="meta">${item.description.substring(0, 100)}...</div>
+              </div>
+              <div class="list-item-actions">
+                <button class="btn-delete" onclick="deleteNews(${item.id})" data-i18n="adminPage.delete">Delete</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load news:', err);
+      }
+    }
+
+    async function addNews() {
+      const token = getToken();
+      const title = document.getElementById('newsTitle').value;
+      const description = document.getElementById('newsDescription').value;
+      const link = document.getElementById('newsLink').value;
+
+      if (!title || !description || !link) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/news', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-token': token
+          },
+          body: JSON.stringify({ title, description, link })
+        });
+
+        if (res.ok) {
+          clearForm('newsTitle', 'newsDescription', 'newsLink');
+          loadNews();
+        } else {
+          alert('Failed to add news');
+        }
+      } catch (err) {
+        alert('Error adding news');
+      }
+    }
+
+    async function deleteNews(id) {
+      const token = getToken();
+      if (!confirm('Delete this news item?')) return;
+
+      try {
+        await fetch(`/api/news/${id}`, {
+          method: 'DELETE',
+          headers: { 'x-admin-token': token }
+        });
+        loadNews();
+      } catch (err) {
+        alert('Error deleting news');
+      }
+    }
+
+    // Token validation function
+    async function validateToken() {
+      const token = getToken();
+      const statusEl = document.getElementById('tokenStatus');
+
+      if (!token) {
+        statusEl.textContent = 'Please enter a token first.';
+        statusEl.className = 'token-status invalid show';
+        setTimeout(() => statusEl.classList.remove('show'), 3000);
+        return false;
+      }
+
+      try {
+        const res = await fetch('/api/contacts', {
+          headers: { 'x-admin-token': token }
+        });
+
+        if (res.ok) {
+          statusEl.textContent = 'Token is valid! Loading data...';
+          statusEl.className = 'token-status valid show';
+          loadContacts();
+          setTimeout(() => statusEl.classList.remove('show'), 3000);
+          return true;
+        } else {
+          statusEl.textContent = 'Invalid token. Please check and try again.';
+          statusEl.className = 'token-status invalid show';
+          setTimeout(() => statusEl.classList.remove('show'), 3000);
+          return false;
+        }
+      } catch (err) {
+        statusEl.textContent = 'Error validating token.';
+        statusEl.className = 'token-status invalid show';
+        setTimeout(() => statusEl.classList.remove('show'), 3000);
+        return false;
+      }
+    }
+
+    // Contacts functions
+    async function loadContacts() {
+      const token = getToken();
+      if (!token) {
+        document.getElementById('contactsList').innerHTML = '<div class="no-items">Enter admin token to view contacts.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/contacts', {
+          headers: { 'x-admin-token': token }
+        });
+        const data = await res.json();
+        const listEl = document.getElementById('contactsList');
+
+        if (!data.contacts || data.contacts.length === 0) {
+          listEl.innerHTML = '<div class="no-items" data-i18n="adminPage.noContacts">No contacts yet.</div>';
+        } else {
+          listEl.innerHTML = data.contacts.map((contact, index) => `
+            <div class="list-item" style="flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid var(--glass); border-radius: 8px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.02);">
+              <div class="list-item-content" style="width: 100%;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                  <div><strong data-i18n="adminPage.name">Name</strong>: <span style="color: var(--blue-neon);">${contact.name}</span></div>
+                  <div><strong data-i18n="adminPage.email">Email</strong>: <span style="color: var(--accent);">${contact.email}</span></div>
+                  ${contact.phone ? `<div><strong data-i18n="adminPage.phone">Phone</strong>: <span style="color: var(--soft);">${contact.phone}</span></div>` : ''}
+                  <div><strong data-i18n="adminPage.timestamp">Timestamp</strong>: <span style="color: var(--text-muted); font-size: 12px;">${new Date(contact.timestamp).toLocaleString()}</span></div>
+                </div>
+                <div style="border-top: 1px solid var(--glass); padding-top: 12px;">
+                  <strong data-i18n="adminPage.message">Message</strong>:<br>
+                  <div style="background: rgba(255, 255, 255, 0.01); padding: 8px; border-radius: 4px; margin-top: 4px; color: var(--text-secondary); white-space: pre-wrap;">${contact.message}</div>
+                </div>
+              </div>
+              <div class="list-item-actions" style="align-self: flex-end;">
+                <button class="btn-delete" onclick="deleteContact(${index})" data-i18n="adminPage.deleteContact">Delete</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load contacts:', err);
+      }
+    }
+
+    async function deleteContact(index) {
+      const token = getToken();
+      if (!confirm('Delete this contact?')) return;
+
+      try {
+        await fetch(`/api/contacts/${index}`, {
+          method: 'DELETE',
+          headers: { 'x-admin-token': token }
+        });
+        loadContacts();
+      } catch (err) {
+        alert('Error deleting contact');
+      }
+    }
+
+    // Event listeners
+    document.getElementById('addMeetingBtn').addEventListener('click', addMeeting);
+    document.getElementById('addNewsBtn').addEventListener('click', addNews);
+    document.getElementById('validateTokenBtn').addEventListener('click', validateToken);
+    document.getElementById('token').addEventListener('input', loadContacts);
+
+    // Initial load
+    loadMeetings();
+    loadNews();
+    loadContacts();
+
+    // Initialize icons
+    lucide.createIcons();
   </script>
 </body>
 </html>

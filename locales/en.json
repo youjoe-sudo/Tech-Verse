@@ -47,12 +47,29 @@
   "adminPage": {
     "title": "TechVerse — Admin Dashboard",
     "adminToken": "Admin Token",
+    "validateToken": "Validate Token",
+    "tokenValid": "Token is valid! Loading data...",
+    "tokenInvalid": "Invalid token. Please check and try again.",
     "addMeeting": "Add Meeting",
     "titleLabel": "Title",
     "whenLabel": "When (human)",
     "linkLabel": "Link",
     "addBtn": "Add Meeting",
     "upcomingMeetings": "Upcoming Meetings",
-    "delete": "Delete"
+    "delete": "Delete",
+    "addNews": "Add News",
+    "newsTitleLabel": "Title",
+    "newsDescriptionLabel": "Description",
+    "newsLinkLabel": "Link",
+    "addNewsBtn": "Add News",
+    "latestNews": "Latest News",
+    "contacts": "Contacts",
+    "noContacts": "No contacts yet.",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "timestamp": "Timestamp",
+    "deleteContact": "Delete"
   }
 }
