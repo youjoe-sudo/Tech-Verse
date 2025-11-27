@@ -7,28 +7,35 @@ const Parser = require('rss-parser');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 
+// Data file paths
+const NEWS_FILE = path.join(__dirname, 'data', 'news.json');
+const MEET_FILE = path.join(__dirname, 'data', 'meetings.json');
+const CONTACTS_FILE = path.join(__dirname, 'data', 'contacts.json');
+
+// Helper functions for JSON file operations
+function readJson(filePath) {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error(`Error reading ${filePath}:`, err);
+    return { items: [] };
+  }
+}
+
+function writeJson(filePath, data) {
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error(`Error writing ${filePath}:`, err);
+  }
+}
+
 //////////////////////////////////////////////////////
 // Basic Config, Data Paths, and Initialization
 //////////////////////////////////////////////////////
 const app = express();
-const PORT = 3000;
-const DATA_DIR = path.join(__dirname, 'data');
-const NEWS_FILE = path.join(DATA_DIR, 'news.json');
-const MEET_FILE = path.join(DATA_DIR, 'meetings.json');
-const CONTACTS_FILE = path.join(DATA_DIR, 'contacts.json');
-
-// --- Helper Functions ---
-function readJson(file) {
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
-  catch (e) { return { items: [] }; }
-}
-function writeJson(file, data) { fs.writeFileSync(file, JSON.stringify(data, null, 2)); }
-
-// Ensure data folder and files exist
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(NEWS_FILE)) writeJson(NEWS_FILE, { items: [] });
-if (!fs.existsSync(MEET_FILE)) writeJson(MEET_FILE, { items: [] });
-if (!fs.existsSync(CONTACTS_FILE)) writeJson(CONTACTS_FILE, { contacts: [] });
+const PORT = process.env.PORT || 3000;
 
 
 //////////////////////////////////////////////////////
@@ -84,35 +91,54 @@ app.get('/locales/:lang.json', (req, res) => {
 //////////////////////////////////////////////////////
 
 // GET: News Data
-app.get('/api/news', (req, res) => {
+app.get('/api/news', async (req, res) => {
   // In a real app, this would dynamically fetch RSS/scrape sites
-  const newsData = readJson(NEWS_FILE);
-  res.json(newsData);
+  try {
+    const news = await News.find({});
+    res.json({ items: news });
+  } catch (err) {
+    console.error('Error fetching news:', err);
+    res.status(500).json({ error: 'Failed to fetch news' });
+  }
 });
 
 // GET: Meetings Data
-app.get('/api/meetings', (req, res) => {
-  const meetData = readJson(MEET_FILE);
-  res.json(meetData);
+app.get('/api/meetings', async (req, res) => {
+  try {
+    const meetings = await Meeting.find({});
+    res.json({ items: meetings });
+  } catch (err) {
+    console.error('Error fetching meetings:', err);
+    res.status(500).json({ error: 'Failed to fetch meetings' });
+  }
 });
 
 // POST: Contact Form Submission (using Nodemailer for a real app, here simulated)
-app.post('/api/contacts', (req, res) => {
+app.post('/api/contacts', async (req, res) => {
   const { name, email, phone, message } = req.body;
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  const contacts = readJson(CONTACTS_FILE);
-  contacts.contacts.push({ name, email, phone, message, timestamp: new Date().toISOString() });
-  writeJson(CONTACTS_FILE, contacts);
-
-  // Simulation of a successful email send
-  res.status(200).json({ success: true, message: 'Message recorded successfully.' });
+  try {
+    const newContact = new Contact({
+      name,
+      email,
+      phone,
+      message,
+      timestamp: new Date(),
+      id: Date.now()
+    });
+    await newContact.save();
+    res.status(200).json({ success: true, message: 'Message recorded successfully.' });
+  } catch (err) {
+    console.error('Error saving contact:', err);
+    res.status(500).json({ error: 'Failed to save contact' });
+  }
 });
 
 // POST: Meetings creation (Admin only - using a simple token for mock auth)
-app.post('/api/meetings', (req, res) => {
+app.post('/api/meetings', async (req, res) => {
   const adminToken = req.header('x-admin-token');
   // Simple mock token check
   if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
@@ -124,26 +150,36 @@ app.post('/api/meetings', (req, res) => {
     return res.status(400).json({ error: 'Missing meeting details' });
   }
 
-  const meetings = readJson(MEET_FILE);
-  meetings.items.push({ id: Date.now(), title, when, link });
-  writeJson(MEET_FILE, meetings);
-
-  res.status(201).json({ success: true, message: 'Meeting added.' });
+  try {
+    const newMeeting = new Meeting({
+      title,
+      when,
+      link,
+      id: Date.now()
+    });
+    await newMeeting.save();
+    res.status(201).json({ success: true, message: 'Meeting added.' });
+  } catch (err) {
+    console.error('Error saving meeting:', err);
+    res.status(500).json({ error: 'Failed to add meeting' });
+  }
 });
 
 // DELETE: Meetings deletion (Admin only)
-app.delete('/api/meetings/:id', (req, res) => {
+app.delete('/api/meetings/:id', async (req, res) => {
   const adminToken = req.header('x-admin-token');
   if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
     return res.status(403).json({ error: 'Invalid admin token' });
   }
 
   const id = parseInt(req.params.id);
-  const meetings = readJson(MEET_FILE);
-  meetings.items = meetings.items.filter(m => m.id !== id);
-  writeJson(MEET_FILE, meetings);
-
-  res.json({ success: true, message: 'Meeting deleted.' });
+  try {
+    await Meeting.deleteOne({ id });
+    res.json({ success: true, message: 'Meeting deleted.' });
+  } catch (err) {
+    console.error('Error deleting meeting:', err);
+    res.status(500).json({ error: 'Failed to delete meeting' });
+  }
 });
 
 // POST: News creation (Admin only)
@@ -166,46 +202,57 @@ app.post('/api/news', (req, res) => {
 });
 
 // DELETE: News deletion (Admin only)
-app.delete('/api/news/:id', (req, res) => {
+app.delete('/api/news/:id', async (req, res) => {
   const adminToken = req.header('x-admin-token');
   if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
     return res.status(403).json({ error: 'Invalid admin token' });
   }
 
   const id = parseInt(req.params.id);
-  const news = readJson(NEWS_FILE);
-  news.items = news.items.filter(n => n.id !== id);
-  writeJson(NEWS_FILE, news);
-
-  res.json({ success: true, message: 'News deleted.' });
+  try {
+    await News.deleteOne({ id });
+    res.json({ success: true, message: 'News deleted.' });
+  } catch (err) {
+    console.error('Error deleting news:', err);
+    res.status(500).json({ error: 'Failed to delete news' });
+  }
 });
 
 // GET: Contacts (Admin only)
-app.get('/api/contacts', (req, res) => {
+app.get('/api/contacts', async (req, res) => {
   const adminToken = req.header('x-admin-token');
   if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
     return res.status(403).json({ error: 'Invalid admin token' });
   }
 
-  const contacts = readJson(CONTACTS_FILE);
-  res.json(contacts);
+  try {
+    const contacts = await Contact.find({});
+    res.json({ contacts });
+  } catch (err) {
+    console.error('Error fetching contacts:', err);
+    res.status(500).json({ error: 'Failed to fetch contacts' });
+  }
 });
 
 // DELETE: Contacts deletion (Admin only)
-app.delete('/api/contacts/:index', (req, res) => {
+app.delete('/api/contacts/:index', async (req, res) => {
   const adminToken = req.header('x-admin-token');
   if (adminToken !== 'Admin-Hager' && adminToken !== 'Admin-Malak' && adminToken !== 'Admin-Abdelfatah') {
     return res.status(403).json({ error: 'Invalid admin token' });
   }
 
   const index = parseInt(req.params.index);
-  const contacts = readJson(CONTACTS_FILE);
-  if (index >= 0 && index < contacts.contacts.length) {
-    contacts.contacts.splice(index, 1);
-    writeJson(CONTACTS_FILE, contacts);
-    res.json({ success: true, message: 'Contact deleted.' });
-  } else {
-    res.status(404).json({ error: 'Contact not found.' });
+  try {
+    const contacts = await Contact.find({});
+    if (index >= 0 && index < contacts.length) {
+      await Contact.findByIdAndDelete(contacts[index]._id);
+      res.json({ success: true, message: 'Contact deleted.' });
+    } else {
+      res.status(404).json({ error: 'Contact not found.' });
+    }
+  } catch (err) {
+    console.error('Error deleting contact:', err);
+    res.status(500).json({ error: 'Failed to delete contact' });
   }
 });
 
@@ -245,6 +292,12 @@ app.use((req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+// For Vercel serverless deployment, export the app
+module.exports = app;
+
+// For local development
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}

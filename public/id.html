@@ -1,233 +1,485 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>TechVerse — Verify</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg1:#0A1E3F; --bg2:#1B4A7A; --accent:#00D4FF; --gold-1:#FFD700; --muted:#AAB7C4;
-    --card-w:420px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family:"Poppins",system-ui,Arial; background:linear-gradient(135deg,var(--bg1),var(--bg2));
-    display:flex;align-items:center;justify-content:center;padding:28px;color:#eaf8ff;
-  }
-
-  .wrap{width:100%;max-width:1100px;}
-  .panel{
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-    border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);
-    box-shadow:0 10px 30px rgba(2,6,23,0.6);
-    display:flex;gap:18px;align-items:flex-start;
-  }
-
-  /* Left: Search */
-  .left{
-    flex:1; display:flex;flex-direction:column;gap:12px;min-height:120px;
-  }
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:56px;height:56px;border-radius:8px;background:rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
-  .title{font-size:18px;color:var(--accent);font-weight:600}
-  .search-row{display:flex;gap:10px}
-  input.search{
-    flex:1;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
-    background:rgba(255,255,255,0.03); color:#eaf8ff; font-size:16px; outline:none;
-  }
-  button.action{
-    background:var(--accent); color:#022; border:0;padding:12px 14px;border-radius:10px;font-weight:700;cursor:pointer;
-  }
-  button.action:active{transform:translateY(1px)}
-  .uploader{display:none} /* external JSON only per request */
-
-  /* Right: Result card only (no extra texts) */
-  .right{width:var(--card-w); display:flex;align-items:center;justify-content:center}
-  .card{
-    width:100%; background: linear-gradient(180deg,#0e2a4b,#123a5d); border-radius:12px; padding:16px; overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.04);
-    display:flex;flex-direction:column; gap:8px;align-items:stretch;
-  }
-  .card .top{display:flex;align-items:center;gap:10px;justify-content:center}
-  .card .logo-small{width:44px;height:44px;border-radius:8px;background:rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700}
-  .card h2{font-family:"Playfair Display",serif;color:#9FE9FF;margin:6px 0 0 0;text-align:center;font-size:16px}
-  .presented{text-align:center;color:#E6F7FF;opacity:.95;font-size:12px}
-  .recipient{font-family:"Great Vibes",cursive;text-align:center;font-size:28px;color:var(--gold-1);text-shadow:0 2px 4px rgba(0,0,0,0.6);margin:4px 0}
-  .desc{font-size:13px;color:var(--muted);text-align:center;line-height:1.35;padding:0 6px}
-  .meta{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:var(--muted);font-size:12px}
-  .meta .id{font-weight:700;color:#fff}
-  .controls-row{display:flex;gap:8px;justify-content:center;margin-top:8px}
-  .btn-min{padding:8px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
-  .view{background:rgba(255,255,255,0.95);color:#022}
-  .download{background:rgba(0,0,0,0.12);color:var(--accent);border:1px solid rgba(255,255,255,0.04)}
-  .empty{opacity:0.9; height:210px; display:flex;align-items:center;justify-content:center}
-  /* small responsive */
-  @media (max-width:900px){
-    .panel{flex-direction:column;}
-    .right{width:100%}
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .search-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .search-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .search-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-button {
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .certificate-section {
+            display: none;
+            margin-top: 20px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .certificate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .certificate-title {
+            font-size: 24px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .certificate-id {
+            font-size: 16px;
+            color: #7f8c8d;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        .certificate-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .certificate-details {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        
+        .certificate-image {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .certificate-image img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .certificate-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+        
+        .action-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .view-button {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .view-button:hover {
+            background-color: #27ae60;
+        }
+        
+        .download-button {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .download-button:hover {
+            background-color: #c0392b;
+        }
+        
+        .error-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .success-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d1edff;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            color: #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            .certificate-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-input-group {
+                flex-direction: column;
+            }
+            
+            .certificate-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="panel" role="application" aria-label="TechVerse certificate verifier">
-      <div class="left" aria-hidden="false">
-        <div class="brand">
-          <div class="logo">TV</div>
-          <div>
-            <div class="title">TechVerse</div>
-          </div>
+    <div class="container">
+        <h1>Certificate Search</h1>
+        <p class="subtitle">Enter a certificate ID to view and download the certificate</p>
+        
+        <div class="search-section">
+            <label class="search-label" for="certificate-id">Certificate ID</label>
+            <div class="search-input-group">
+                <input type="text" id="certificate-id" class="search-input" placeholder="Enter certificate ID (e.g., TV-2025-015)">
+                <button id="search-button" class="search-button">Search</button>
+            </div>
         </div>
-
-        <div class="search-row" style="margin-top:8px">
-          <input id="q" class="search" type="search" placeholder="اكتب Certificate ID" aria-label="certificate id" />
-          <button id="go" class="action" title="ابحث" onclick="alert('يبني هو احنا لسه عملنا حاجه علشان تشوف الشهادات 😔')">Search</button>
+        
+        <div id="loading" class="loading">
+            Loading certificate data...
         </div>
-      </div>
-
-      <div class="right" aria-live="polite">
-        <div id="cardWrap" class="card">
-          <div class="empty" id="emptyState"></div>
+        
+        <div id="error-message" class="error-message">
+            Certificate not found. Please check the ID and try again.
         </div>
-      </div>
+        
+        <div id="success-message" class="success-message">
+            Certificate found successfully!
+        </div>
+        
+        <div id="certificate-section" class="certificate-section">
+            <div class="certificate-header">
+                <h2 class="certificate-title">Certificate of Achievement</h2>
+                <div class="certificate-id" id="display-id">ID: TV-2025-015</div>
+            </div>
+            
+            <div class="certificate-content">
+                <div class="certificate-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Recipient Name</span>
+                        <span class="detail-value" id="display-name">John Doe</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <span class="detail-label">Certificate Title</span>
+                        <span class="detail-value" id="display-title">Advanced Web Development</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <span class="detail-label">Issue Date</span>
+                        <span class="detail-value" id="display-date">October 21, 2025</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <span class="detail-label">Description</span>
+                        <span class="detail-value" id="display-desc">Successfully completed the Advanced Web Development course with distinction.</span>
+                    </div>
+                </div>
+                
+                <div class="certificate-image">
+                    <div class="image-placeholder" id="image-placeholder">
+                        Certificate Image Preview
+                    </div>
+                    <img id="certificate-image" src="" alt="Certificate" style="display: none;">
+                </div>
+            </div>
+            
+            <div class="certificate-actions">
+                <button id="view-button" class="action-button view-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                    </svg>
+                    View Certificate
+                </button>
+                <button id="download-button" class="action-button download-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    Download Certificate
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 
-<script>
-/*
-  Usage:
-  - Put a file named `certs.json` in the same folder (or change URL below)
-  - certs.json should be an array of objects:
-    [{ "id":"TV-2025-015","name":"...","title":"...","date":"...","desc":"...","image":"https://..." }, ...]
-  - The page fetches that file once on load.
-  - No extra text shown (only the card area).
-*/
+    <script>
+        // DOM elements
+        const searchInput = document.getElementById('certificate-id');
+        const searchButton = document.getElementById('search-button');
+        const certificateSection = document.getElementById('certificate-section');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const loadingElement = document.getElementById('loading');
+        
+        // Display elements
+        const displayId = document.getElementById('display-id');
+        const displayName = document.getElementById('display-name');
+        const displayTitle = document.getElementById('display-title');
+        const displayDate = document.getElementById('display-date');
+        const displayDesc = document.getElementById('display-desc');
+        const certificateImage = document.getElementById('certificate-image');
+        const imagePlaceholder = document.getElementById('image-placeholder');
+        
+        // Action buttons
+        const viewButton = document.getElementById('view-button');
+        const downloadButton = document.getElementById('download-button');
 
-const JSON_URL = './data/certs.json'; // change path/URL if needed
-let certificates = [];
+        // Global variable to store certificate data
+        let certificates = [];
 
-// DOM
-const q = document.getElementById('q');
-const go = document.getElementById('go');
-const cardWrap = document.getElementById('cardWrap');
-const emptyState = document.getElementById('emptyState');
+        // Load certificate data from JSON file
+        async function loadCertificateData() {
+            try {
+                loadingElement.style.display = 'block';
+                const response = await fetch('certs.json');
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load certificate data: ${response.status}`);
+                }
+                
+                certificates = await response.json();
+                loadingElement.style.display = 'none';
+                console.log('Certificate data loaded successfully:', certificates);
+                
+                // Auto-search with a sample ID if available
+                if (certificates.length > 0) {
+                    searchInput.value = certificates[0].id;
+                    searchCertificate();
+                }
+            } catch (error) {
+                loadingElement.style.display = 'none';
+                errorMessage.textContent = `Error loading certificate data: ${error.message}. Please check if certificates.json exists.`;
+                errorMessage.style.display = 'block';
+                console.error('Error loading certificate data:', error);
+            }
+        }
 
-function clearCard(){
-  cardWrap.innerHTML = '<div class="empty" id="emptyState"></div>';
-}
+        // Search function
+        function searchCertificate() {
+            const searchId = searchInput.value.trim();
+            
+            // Hide messages and certificate section
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            certificateSection.style.display = 'none';
+            
+            if (!searchId) {
+                errorMessage.textContent = "Please enter a certificate ID.";
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Find certificate in the data
+            const certificate = certificates.find(cert => cert.id === searchId);
+            
+            if (certificate) {
+                // Display certificate information
+                displayId.textContent = `ID: ${certificate.id}`;
+                displayName.textContent = certificate.name;
+                displayTitle.textContent = certificate.title;
+                displayDate.textContent = certificate.date;
+                displayDesc.textContent = certificate.desc;
+                
+                // Handle image display
+                if (certificate.image) {
+                    imagePlaceholder.style.display = 'none';
+                    certificateImage.src = certificate.image;
+                    certificateImage.alt = `${certificate.name} Certificate`;
+                    certificateImage.style.display = 'block';
+                } else {
+                    imagePlaceholder.style.display = 'flex';
+                    certificateImage.style.display = 'none';
+                }
+                
+                // Show certificate section and success message
+                certificateSection.style.display = 'block';
+                successMessage.style.display = 'block';
+                
+                // Set up action buttons
+                viewButton.onclick = function() {
+                    alert(`Viewing certificate: ${certificate.id}`);
+                    // In a real application, this would open the certificate in a modal or new tab
+                };
+                
+                downloadButton.onclick = function() {
+                    // Create a download link for the certificate
+                    const link = document.createElement('a');
+                    link.href = certificate.image || '#';
+                    link.download = `certificate_${certificate.id}.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    alert(`Downloading certificate: ${certificate.id}`);
+                };
+            } else {
+                errorMessage.textContent = `Certificate with ID "${searchId}" not found. Please check the ID and try again.`;
+                errorMessage.style.display = 'block';
+            }
+        }
 
-function renderItem(it){
-  const imgHtml = it.image ? `<img src="${escapeHTML(it.image)}" alt="" style="width:100%;border-radius:8px;margin-top:8px;object-fit:cover;max-height:160px;">` : '';
-  return `
-    <div class="top">
-      <div class="logo-small">TV</div>
-    </div>
-    <h2>${escapeHTML(it.title || '')}</h2>
-    <div class="presented">Presented to</div>
-    <div class="recipient">${escapeHTML(it.name)}</div>
-    <div style="height:6px;border-bottom:2px solid rgba(255,255,255,0.06);margin:6px 18px;"></div>
-    <div class="desc">${escapeHTML(it.desc || '')}</div>
-    ${imgHtml}
-    <div class="meta">
-      <div><small style="opacity:0.8">Date</small><div class="sid">${escapeHTML(it.date||'')}</div></div>
-      <div style="text-align:left"><small style="opacity:0.8">ID</small><div class="id">${escapeHTML(it.id)}</div></div>
-    </div>
-    <div class="controls-row">
-      <button class="btn-min view" onclick="onView('${encodeURIComponent(it.id)}')">View</button>
-      <button class="btn-min download" onclick="onDownload('${encodeURIComponent(it.id)}')">Download</button>
-    </div>
-  `;
-}
+        // Event listeners
+        searchButton.addEventListener('click', searchCertificate);
+        
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                searchCertificate();
+            }
+        });
 
-function escapeHTML(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
-
-// fetch external JSON
-async function loadJson(){
-  try{
-    const r = await fetch(JSON_URL, {cache:'no-store'});
-    if(!r.ok) throw new Error('failed');
-    const data = await r.json();
-    if(Array.isArray(data)) certificates = data;
-  }catch(e){
-    certificates = [];
-    // silent failure per request (no extra text)
-  }
-}
-loadJson();
-
-// search
-function searchById(id){
-  if(!id) { clearCard(); return; }
-  const q = id.trim().toLowerCase();
-  const found = certificates.find(c => (c.id||'').toLowerCase() === q);
-  if(found){
-    cardWrap.innerHTML = renderItem(found);
-  } else {
-    // no visual extra text — show nothing (empty)
-    cardWrap.innerHTML = '<div class="empty"></div>';
-  }
-}
-
-// View -> open image if exists else open printable view
-window.onView = function(idEnc){
-  const id = decodeURIComponent(idEnc);
-  const item = certificates.find(c => (c.id||'').toLowerCase() === id.toLowerCase());
-  if(!item) return;
-  if(item.image){
-    window.open(item.image, '_blank');
-    return;
-  }
-  // printable view
-  const html = buildPrintable(item);
-  const w = window.open('', '_blank');
-  if(!w) return;
-  w.document.write(html);
-  w.document.close();
-}
-
-// Download -> if image: download image blob; else download single-item JSON
-window.onDownload = async function(idEnc){
-  const id = decodeURIComponent(idEnc);
-  const item = certificates.find(c => (c.id||'').toLowerCase() === id.toLowerCase());
-  if(!item) return;
-  if(item.image){
-    try{
-      const res = await fetch(item.image);
-      const blob = await res.blob();
-      const a = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      a.href = url;
-      a.download = (item.id || 'certificate') + (blob.type.includes('png') ? '.png' : '.jpg');
-      document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
-      return;
-    }catch(e){
-      // fallback: download JSON
-    }
-  }
-  // fallback: download JSON
-  const blob = new Blob([JSON.stringify(item, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  const url = URL.createObjectURL(blob);
-  a.href = url; a.download = (item.id || 'certificate') + '.json';
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function buildPrintable(it){
-  const imagePart = it.image ? `<img src="${escapeHTML(it.image)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:12px;">` : '';
-  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${escapeHTML(it.id)}</title>
-  <style>body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#f7f9fb;color:#111} .wrap{max-width:800px;margin:0 auto;background:#fff;padding:24px;border-radius:8px} h1{font-family: 'Playfair Display', serif;color:#0b355a} .name{font-family:'Great Vibes', cursive;font-size:42px;color:#b8860b}</style></head><body><div class="wrap"><h1>${escapeHTML(it.title||'')}</h1><div class="presented">Presented to</div><div class="name">${escapeHTML(it.name)}</div><p>${escapeHTML(it.desc||'')}</p>${imagePart}<p style="margin-top:18px"><strong>ID:</strong> ${escapeHTML(it.id)} <span style="margin-left:18px"><strong>Date:</strong> ${escapeHTML(it.date||'')}</span></p></div></body></html>`;
-}
-
-// events
-go.addEventListener('click', ()=> searchById(q.value));
-q.addEventListener('keydown', (e)=> { if(e.key==='Enter') searchById(q.value); });
-
-// initial: empty
-clearCard();
-</script>
+        // Initialize by loading certificate data
+        window.onload = loadCertificateData;
+    </script>
 </body>
 </html>

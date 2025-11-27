@@ -1,37 +1,29 @@
-# TODO: Enhance Admin Page to Control Entire Website and Improve Design
-
-## Information Gathered:
-- Current admin.html only manages meetings (add/delete).
-- Server.js has APIs for news (POST/DELETE), contacts (GET/DELETE), meetings (POST/DELETE).
-- Design is basic dark theme with simple forms.
-- Translations handled via locales/en.json and ar.json.
-- Admin token: 'SUPER_SECURE_TOKEN_123'.
-- Data files: news.json, meetings.json, contacts.json, certs.json.
-
-## Plan:
-- Update public/admin.html: Improve design with modern UI, add sections for news management, contacts management.
-- Add news management: Form to add news, list to view/delete news.
-- Add contacts management: List to view/delete contacts.
-- Improve overall design: Better layout, icons, responsiveness, consistent with main site theme.
-- Update translations: Add new keys for admin features in locales files.
-
-## Dependent Files to be edited:
-- public/admin.html: Redesign and add functionality.
-- locales/en.json: Add admin translations.
-- locales/ar.json: Add admin translations.
-
-## Followup steps:
-- Test admin page functionality.
-- Ensure admin token security.
-- Verify responsive design.
-- Check translations load correctly.
-
-## Approved Plan: Proceed
+# Migration to MongoDB for Vercel Deployment
 
 ## Steps to Complete:
-- [x] Update locales/en.json with new admin translation keys.
-- [x] Update locales/ar.json with new admin translation keys.
-- [x] Redesign public/admin.html: Improve overall design, add news management section, add contacts management section.
-- [x] Test the updated admin page locally.
-- [x] Verify all functionalities work with admin token.
-- [x] Update contact.html to actually submit contacts to server.
+
+1. **Set up MongoDB Atlas**:
+   - Go to https://www.mongodb.com/atlas and create a free account.
+   - Create a new cluster (free tier).
+   - Create a database user with read/write permissions.
+   - Get the connection string (replace <password> with your user's password).
+   - Whitelist your IP (or 0.0.0.0/0 for all).
+
+2. **Update Environment Variables**:
+   - In Vercel dashboard, go to your project settings > Environment Variables.
+   - Add `MONGODB_URI` with your MongoDB connection string.
+
+3. **Code Changes**:
+   - Install mongoose (already done).
+   - Update server.js to use MongoDB instead of JSON files.
+   - Create models for Meeting, News, Contact.
+
+4. **Create vercel.json**:
+   - Configure Vercel to handle the Express app as serverless functions.
+
+5. **Deploy to Vercel**:
+   - Push changes to GitHub.
+   - Vercel will redeploy automatically.
+
+6. **Test**:
+   - Verify admin page can add meetings/news and data persists.
