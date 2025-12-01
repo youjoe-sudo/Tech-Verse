@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vibe Exams — وضع الاختبار الفردي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* الخطوط الأساسية */
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #f7f9fc; /* خلفية أفتح */
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* العنوان الرئيسي */
+        h1 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 38px;
+            font-weight: 800;
+            color: #1e3a8a;
+            border-bottom: 3px solid #60a5fa;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        /* حاوية السؤال الفردي - Wrapper */
+        .wrapper {
+            width: 100%;
+            max-width: 750px; /* تحديد عرض أكبر للسؤال الواحد */
+            margin: auto;
+        }
+
+        /* تصميم البطاقة (Question Card) */
+        .card {
+            background: white;
+            padding: 35px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            display: none; /* إخفاء جميع الأسئلة مبدئياً */
+            min-height: 350px; /* لضمان حجم ثابت للبطاقة */
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* إظهار البطاقة النشطة */
+        .card.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* نص السؤال */
+        .question {
+            font-size: 24px; /* حجم أكبر للسؤال */
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #333;
+            line-height: 1.8;
+            border-bottom: 2px dashed #e2e8f0;
+            padding-bottom: 15px;
+        }
+        .question span {
+            margin-left: 15px;
+        }
+
+        /* منطقة الإجابة */
+        .answer {
+            background: #dbeafe;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 18px;
+            border-left: 6px solid #3b82f6; /* شريط جانبي أكثر سمكاً */
+        }
+        .answer span {
+            margin-left: 15px;
+        }
+
+        /* منطقة الشرح */
+        .explain {
+            background: #f1f5f9;
+            padding: 18px;
+            border-radius: 12px;
+            line-height: 1.8;
+            font-size: 16px;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+        .explain strong {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* تذييل الشرح الموسّع */
+        .extended-explain-note {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dotted #a0aec0;
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        /* أزرار التحكم */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 750px;
+            margin-top: 30px;
+        }
+
+        .control-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            flex-grow: 1;
+            margin: 0 10px;
+        }
+
+        .control-btn:hover {
+            background-color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+
+        .control-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        /* مؤشر تقدم */
+        .progress {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <h1>✨ وضع الاختبار الفردي — Vibe Exams ✨</h1>
+    </div>
+    <div class="wrapper">
+        <div class="card" data-id="1">
+            <div>
+                <div class="question"><span>❓</span>ماذا تعني HTML؟</div>
+                <div class="answer"><span>✅</span>Hyper Text Markup Language</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> هي لغة توصيف تُستخدم لبناء الهيكل الأساسي لصفحات الويب.
+                    <div class="extended-explain-note">
+                        شرح موسّع: فهم هذا المفهوم حيوي، فـ **HTML** هي العظام التي يقوم عليها الهيكل، بعدها يأتي CSS للمظهر و JavaScript للتفاعل. إتقانها يفتح آفاقًا لبناء أي موقع إلكتروني.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="2">
+            <div>
+                <div class="question"><span>🔗</span>أي وسم يُستخدم لإنشاء رابط؟</div>
+                <div class="answer"><span>✅</span>&lt;a&gt; (Anchor Tag)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> يُستخدم لإنشاء روابط تشعبية (Hyperlinks) للانتقال بين الصفحات أو داخل الصفحة نفسها.
+                    <div class="extended-explain-note">
+                        شرح موسّع: وسم الـ **Anchor** هو أساس ترابط الويب. الخاصية الأساسية له هي **href** التي تحدد وجهة الرابط.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="3">
+            <div>
+                <div class="question"><span>🖼️</span>أي Attribute يحدد مصدر الصورة؟</div>
+                <div class="answer"><span>✅</span>src</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> هي اختصار لـ **Source** وتحدد المسار (Path) لملف الصورة المطلوب عرضه.
+                    <div class="extended-explain-note">
+                        شرح موسّع: لا تنسَ خاصية **alt**، فهي مهمة جداً لتحسين محركات البحث (SEO) ولإمكانية وصول ذوي الإعاقة البصرية.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" data-id="4">
+            <div>
+                <div class="question"><span>💡</span>أي كلمة لتعريف متغير في JavaScript؟</div>
+                <div class="answer"><span>✅</span>var / let / const</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تُستخدم لحجز مكان في الذاكرة لتخزين قيمة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: **let** و **const** (مُقدمتان في ES6) هما المفضلتان حالياً، حيث توفر **const** ثباتاً للقيمة، و **let** تُحسن نطاق المتغيرات (Scope) مقارنة بـ **var**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="5">
+            <div>
+                <div class="question"><span>📝</span>رمز التعليقات لسطر واحد في JavaScript؟</div>
+                <div class="answer"><span>✅</span>//</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> يُستخدم لكتابة ملاحظات في الكود لا يتم تنفيذها بواسطة المترجم/المفسّر، وهو ضروري لشرح منطق الكود.
+                    <div class="extended-explain-note">
+                        شرح موسّع: للتعليقات متعددة الأسطر يُستخدم الرمز: **/* ... */**. التعليقات الجيدة تحسّن من قابلية قراءة الكود وصيانته.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="6">
+            <div>
+                <div class="question"><span>🌳</span>مكتبة شهيرة للتعامل مع الـDOM بسهولة؟</div>
+                <div class="answer"><span>✅</span>jQuery</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تبسيط عملية التلاعب بعناصر HTML (الـDOM)، والتعامل مع الأحداث والحركات بشكل كبير.
+                    <div class="extended-explain-note">
+                        شرح موسّع: بالرغم من أن JavaScript النقية (Vanilla JS) أصبحت أقوى، إلا أن **jQuery** لا تزال تُستخدم في الكثير من المشاريع القديمة وتُعتبر معياراً تاريخياً.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="7">
+            <div>
+                <div class="question"><span>⚛️</span>مكتبة لبناء واجهات مستخدم تفاعلية (UI) تعتمد على المكونات؟</div>
+                <div class="answer"><span>✅</span>React</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> إنشاء واجهات مستخدم سريعة وقابلة للتوسع باستخدام نظام المكونات (Components).
+                    <div class="extended-explain-note">
+                        شرح موسّع: **React** التي طورتها فيسبوك، تستخدم مفهوم **Virtual DOM** لتحسين أداء تحديث الواجهة بشكل كبير.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="8">
+            <div>
+                <div class="question"><span>⚙️</span>بيئة تشغيل JavaScript على السيرفر (Backend)؟</div>
+                <div class="answer"><span>✅</span>Node.js</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تسمح بتشغيل كود JavaScript خارج المتصفح، مما يمكّن المطور من استخدام نفس اللغة للـ Frontend والـ Backend.
+                    <div class="extended-explain-note">
+                        شرح موسّع: تعتمد **Node.js** على نموذج التشغيل غير المتزامن (Non-blocking I/O) مما يجعلها ممتازة للتطبيقات ذات زمن الاستجابة العالي (Real-time).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="9">
+            <div>
+                <div class="question"><span>➕</span>الوسم المستخدم لإضافة كود JavaScript إلى HTML؟</div>
+                <div class="answer"><span>✅</span>&lt;script&gt;</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> يُستخدم لدمج ملفات JavaScript خارجية أو لكتابة الكود مباشرة داخل صفحة HTML.
+                    <div class="extended-explain-note">
+                        شرح موسّع: يُفضل وضع وسم **&lt;script&gt;** قبل وسم الإغلاق لـ **&lt;/body&gt;** لضمان تحميل محتوى الصفحة بالكامل قبل تشغيل السكريبت.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="10">
+            <div>
+                <div class="question"><span>⚖️</span>رمز المساواة الصارمة (Strict Equality) في JavaScript؟</div>
+                <div class="answer"><span>✅</span>===</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تقارن القيمة **ونوع البيانات** معًا، وتُرجع **True** إذا تطابقا.
+                    <div class="extended-explain-note">
+                        شرح موسّع: الرمز **==** يُقارن القيمة فقط وقد يقوم بتحويل أنواع البيانات (Type Coercion) قبل المقارنة، لذا يُفضل استخدام **===** لتجنب الأخطاء غير المتوقعة.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="11">
+            <div>
+                <div class="question"><span>🗂️</span>الكلمة المفتاحية لتعريف Class في C#؟</div>
+                <div class="answer"><span>✅</span>class</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تُستخدم لإنشاء فئة (Class)، وهي مخطط لإنشاء الكائنات (Objects) في البرمجة الشيئية (OOP).
+                    <div class="extended-explain-note">
+                        شرح موسّع: الفئة (Class) هي أساس تنظيم الكود في C#، وهي تحدد الخصائص (Properties) والسلوكيات (Methods) للكائن.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="12">
+            <div>
+                <div class="question"><span>💬</span>رمز تعليق سطر واحد في C#؟</div>
+                <div class="answer"><span>✅</span>//</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> كـ JavaScript، يُستخدم لإضافة ملاحظات لا تؤثر على تنفيذ الكود.
+                    <div class="extended-explain-note">
+                        شرح موسّع: لتعليق عدة أسطر في C# أو JavaScript يُستخدم **/* ... */**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="13">
+            <div>
+                <div class="question"><span>✔️</span>نوع البيانات للقيم المنطقية (True/False)؟</div>
+                <div class="answer"><span>✅</span>bool (Boolean)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> يمثل قيمة منطقية إما **صحيح (True)** أو **خطأ (False)**، وهو أساس اتخاذ القرارات في البرمجة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: تُستخدم المتغيرات من نوع **bool** بكثرة في جمل الشروط (If Statements) والحلقات التكرارية (Loops).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="14">
+            <div>
+                <div class="question"><span>▶️</span>الدالة الأساسية (نقطة البداية) في تطبيق C# Console؟</div>
+                <div class="answer"><span>✅</span>Main()</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> هي الدالة التي يبدأ منها تنفيذ البرنامج، وهي ضرورية لأي برنامج قابل للتشغيل في C#.
+                    <div class="extended-explain-note">
+                        شرح موسّع: تكون عادة داخل فئة (Class) ويتم تعريفها كـ **static void Main(string[] args)**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="15">
+            <div>
+                <div class="question"><span>🧬</span>الرمز المستخدم لتحديد الوراثة (Inheritance) بين الفئات في C#؟</div>
+                <div class="answer"><span>✅</span>: (القولون)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> يُستخدم لربط فئة فرعية (Derived Class) بفئة رئيسية (Base Class) لترث منها الخصائص والسلوكيات.
+                    <div class="extended-explain-note">
+                        شرح موسّع: الوراثة هي أحد الركائز الأربع للبرمجة الشيئية (OOP) وتساعد على إعادة استخدام الكود. مثال: **class Dog : Animal**
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="16">
+            <div>
+                <div class="question"><span>🔑</span>أي مجموعة (Collection) تخزن البيانات على شكل مفتاح-قيمة (Key-Value)?</div>
+                <div class="answer"><span>✅</span>Dictionary</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> توفير طريقة سريعة وفعالة لتخزين واسترجاع البيانات باستخدام مفتاح فريد لكل عنصر.
+                    <div class="extended-explain-note">
+                        شرح موسّع: تُعرف في لغات أخرى باسم **Hash Map** أو **Associative Array**. في JavaScript يوازيها مفهوم **Object**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="17">
+            <div>
+                <div class="question"><span>🛡️</span>الكلمات المفتاحية لمعالجة الاستثناءات (Exceptions)؟</div>
+                <div class="answer"><span>✅</span>try / catch / throw</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تُستخدم للتعامل مع الأخطاء التي قد تحدث أثناء تشغيل البرنامج لمنع انهياره.
+                    <div class="extended-explain-note">
+                        شرح موسّع: يتم وضع الكود الذي قد يسبب خطأ داخل **try**، ويتم اعتراض الخطأ والتعامل معه داخل **catch**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="18">
+            <div>
+                <div class="question"><span>📰</span>الوسم المستخدم لإنشاء صف في جدول HTML؟</div>
+                <div class="answer"><span>✅</span>&lt;tr&gt; (Table Row)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> يمثل صفاً (Row) داخل جدول، ويحتوي على خلايا الجدول (Table Data - **&lt;td&gt;**).
+                    <div class="extended-explain-note">
+                        شرح موسّع: هيكل الجدول الأساسي هو **&lt;table&gt;** &gt; **&lt;tr&gt;** &gt; **&lt;td&gt;** أو **&lt;th&gt;**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="19">
+            <div>
+                <div class="question"><span>🔄</span>الدالة المستخدمة لتحويل نص JSON (String) إلى كائن JavaScript؟</div>
+                <div class="answer"><span>✅</span>JSON.parse()</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تحويل البيانات المستلمة عبر الشبكة (التي تكون غالباً نص JSON) إلى كائن يمكن التعامل معه في الكود.
+                    <div class="extended-explain-note">
+                        شرح موسّع: الدالة المقابلة لتحويل كائن إلى نص JSON هي **JSON.stringify()**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="20">
+            <div>
+                <div class="question"><span>🧱</span>الكلمة المفتاحية لتعريف متغير ثابت (لا يمكن إعادة تعيين قيمته) في JavaScript؟</div>
+                <div class="answer"><span>✅</span>const</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> الإعلان عن متغير يكون القيمة المرجعية له ثابتة، مما يزيد من وضوح الكود ويمنع التعديلات غير المقصودة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: إذا كان المتغير من نوع كائن، فإن **const** يضمن ثبات مرجع الكائن، ولكن يمكن تغيير محتوى الكائن نفسه.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="21">
+            <div>
+                <div class="question"><span>🚀</span>لماذا Node.js خيار ممتاز للشركات الناشئة (Startups)؟</div>
+                <div class="answer"><span>✅</span>تستخدم JavaScript للـ Frontend و Backend (توحيد اللغة)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تقليل الحاجة لفرق تطوير منفصلة بلغات مختلفة، وتسريع عملية التطوير (Time to Market).
+                    <div class="extended-explain-note">
+                        شرح موسّع: هذا التوحيد يقلل من تكلفة الموارد البشرية ويسهل تبادل المطورين بين مهام الواجهة الأمامية والخلفية.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="22">
+            <div>
+                <div class="question"><span>⚖️</span>الفرق الجوهري بين Library (مكتبة) و Framework (إطار عمل)؟</div>
+                <div class="answer"><span>✅</span>التحكم الأكبر يكون عند المكتبة (Library) - (Inversion of Control)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> في الـ **Framework**، إطار العمل هو من يدير هيكل التطبيق ويستدعي الكود الخاص بك. أما في الـ **Library**، أنت من يستدعي المكتبة متى احتجت لها.
+                    <div class="extended-explain-note">
+                        شرح موسّع: إطار العمل يحدد قواعد اللعبة (مثل Angular)، بينما المكتبة هي مجرد أداة تستخدمها متى أردت (مثل jQuery أو Lodash).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="23">
+            <div>
+                <div class="question"><span>🧠</span>الوظيفة الأساسية للسيرفر (الخادم) في تطبيق الويب؟</div>
+                <div class="answer"><span>✅</span>معالجة البيانات والمنطق وتقديم الاستجابات (Processing Logic & Data)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> استقبال الطلبات من العملاء (المتصفحات)، تنفيذ منطق الأعمال، والوصول إلى قواعد البيانات، ثم إرسال البيانات المطلوبة للعميل.
+                    <div class="extended-explain-note">
+                        شرح موسّع: السيرفر هو "عقل" التطبيق، وهو المسؤول عن كل العمليات التي تتطلب أماناً أو اتصالاً بقاعدة بيانات مركزية.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="24">
+            <div>
+                <div class="question"><span>👑</span>واحدة من أشهر لغات/بيئات العمل المستخدمة في Backend حالياً؟</div>
+                <div class="answer"><span>✅</span>Node.js (باستخدام JavaScript)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> بسبب مرونتها، سرعتها، ونموذجها غير المتزامن، أصبحت من أكثر الخيارات شيوعاً لبناء APIs وخدمات الـ Backend.
+                    <div class="extended-explain-note">
+                        شرح موسّع: تتنافس معها لغات مثل Python (Django/Flask)، Java (Spring)، و C# (.NET).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="25">
+            <div>
+                <div class="question"><span>🏛️</span>لماذا تُعتبر HTML هي الأساس الذي يقوم عليه الويب؟</div>
+                <div class="answer"><span>✅</span>لأنها تبني الهيكل (Structure) والمعنى (Semantics) للمحتوى</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> توفر الأوسمة اللازمة لتنظيم المحتوى (عناوين، فقرات، قوائم، صور...) ليصبح قابلاً للقراءة والتفسير للمتصفحات.
+                    <div class="extended-explain-note">
+                        شرح موسّع: بدون **HTML** لا يوجد محتوى؛ **CSS** يضيف الجمال و **JavaScript** يضيف التفاعل.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="26">
+            <div>
+                <div class="question"><span>⭐</span>مكتبة واجهات تفاعلية تركز على مفهوم المكونات (Components)؟</div>
+                <div class="answer"><span>✅</span>React</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> توفير طريقة فعالة لبناء واجهات مستخدم معقدة عن طريق تقسيمها إلى أجزاء صغيرة ومستقلة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: هذا التكرار يهدف لتثبيت المعلومة بأهمية الـ **Components** التي هي حجر الزاوية في React.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="27">
+            <div>
+                <div class="question"><span>🏢</span>مجموعة تقنيات Backend مُفضلة للمشاريع الضخمة التي تتطلب استقراراً وقابلية توسع عالية؟</div>
+                <div class="answer"><span>✅</span>Java + Spring Boot</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> توفر بيئة Java القوية واستقرار إطار عمل Spring Boot حلولاً موثوقة للمؤسسات الكبيرة وأنظمة البنوك والشركات الضخمة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: **Java** تتميز بنظام كتابة صارم (Strongly Typed) وقابلية توسع (Scalability) ممتازة، مما يقلل الأخطاء في التطبيقات الكبيرة.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="28">
+            <div>
+                <div class="question"><span>⚡🔒</span>مجموعة تقنيات معروفة بالأداء العالي والأمان القوي (من بيئة Microsoft)؟</div>
+                <div class="answer"><span>✅</span>.NET Core + SQL Server</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> إطار عمل **.NET Core** يوفر أداءً سريعاً (خاصة في الـ Benchmarks)، وقاعدة بيانات **SQL Server** معروفة بأمانها وموثوقيتها.
+                    <div class="extended-explain-note">
+                        شرح موسّع: **.NET Core** (أو الآن **.NET**) هو اختيار قوي للشركات التي تستخدم بنية تحتية تعتمد على تقنيات Microsoft.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="29">
+            <div>
+                <div class="question"><span>🔑</span>ما هو الهدف الأساسي من استخدام Authentication (المصادقة)؟</div>
+                <div class="answer"><span>✅</span>تأمين البيانات والتأكد من هوية المستخدم (Identity Verification)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> التحقق من أن المستخدم هو بالفعل الشخص الذي يدّعي أنه هو، لمنحه الوصول إلى بياناته الخاصة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: المصادقة (Authentication) تليها الترخيص (Authorization)، حيث المصادقة تثبت هويتك، والترخيص يحدد ما يمكنك فعله.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="30">
+            <div>
+                <div class="question"><span>📡</span>مكتبة Axios تُستخدم بشكل أساسي لـ؟</div>
+                <div class="answer"><span>✅</span>إجراء طلبات HTTP (التعامل مع API) من المتصفح أو Node.js</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> توفير واجهة سهلة وبسيطة لإرسال البيانات واستقبالها من السيرفر (مثل الحصول على قائمة المنتجات).
+                    <div class="extended-explain-note">
+                        شرح موسّع: تعتبر **Axios** بديلاً شائعاً لدالة **fetch()** المدمجة في المتصفحات، وتتميز بسهولة التعامل مع الأخطاء وإضافة Interceptors.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="31">
+            <div>
+                <div class="question"><span>🌐</span>ماذا تتيح مكتبة Three.js لمطوري الويب؟</div>
+                <div class="answer"><span>✅</span>إنشاء رسومات تفاعلية وثلاثية الأبعاد (3D Graphics) في المتصفح</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> تبسيط عملية استخدام WebGL لإنشاء عوالم ثلاثية الأبعاد، نماذج، وألعاب مباشرة على الويب.
+                    <div class="extended-explain-note">
+                        شرح موسّع: تستخدم **Three.js** لإنشاء تجارب غامرة وتطبيقات الواقع الافتراضي والمعزز على المتصفح.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="32">
+            <div>
+                <div class="question"><span>🎬</span>ما هي الوظيفة الأساسية لمكتبة GSAP (GreenSock Animation Platform)؟</div>
+                <div class="answer"><span>✅</span>الأنيميشن (Animations) الاحترافي عالي الأداء</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> إنشاء حركات معقدة وسلسة لعناصر HTML و SVG و WebGL بدقة وسرعة عالية.
+                    <div class="extended-explain-note">
+                        شرح موسّع: **GSAP** هي معيار صناعي لإنشاء رسوم متحركة احترافية على الويب بسبب موثوقيتها وأدائها المتفوق.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="33">
+            <div>
+                <div class="question"><span>🏗️</span>ما هي المكتبة الأكثر شهرة في بناء UI حالياً؟</div>
+                <div class="answer"><span>✅</span>React</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> هذا التكرار يهدف لتثبيت المعلومة بأهمية **React** في بناء الواجهات الأمامية الحديثة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: المنافسون الرئيسيون لـ **React** هم إطاري العمل **Angular** و **Vue.js**.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="34">
+            <div>
+                <div class="question"><span>🗄️</span>ما هو العامل الرئيسي في اختيار نوع قاعدة البيانات (Relational vs NoSQL)؟</div>
+                <div class="answer"><span>✅</span>هيكل البيانات المطلوبة، حجمها، ونوع العلاقات بينها</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> قاعدة البيانات العلائقية (SQL) تُفضل للعلاقات المعقدة والثابتة، بينما NoSQL (مثل MongoDB) تُفضل للبيانات المتغيرة والسريعة التوسع.
+                    <div class="extended-explain-note">
+                        شرح موسّع: لا يوجد اختيار "أفضل" بشكل مطلق؛ يعتمد الاختيار على المتطلبات الوظيفية للنظام (Use Case).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" data-id="35">
+            <div>
+                <div class="question"><span>🛑</span>عندما يحاول مستخدم غير مصرح له الدخول إلى صفحة (Dashboard) محمية، ما هي العملية التي تمنعه؟</div>
+                <div class="answer"><span>✅</span>Authorization (الترخيص) بعد فشل Authentication (المصادقة)</div>
+                <div class="explain">
+                    <strong>الغاية:</strong> حتى لو قام المستخدم بتسجيل الدخول (Authentication)، فإن **Authorization** هي التي تحدد هل لديه صلاحية الوصول للصفحة.
+                    <div class="extended-explain-note">
+                        شرح موسّع: إذا لم تنجح المصادقة (لم يتم تسجيل الدخول)، يتم منعه. إذا نجحت المصادقة ولكنه لا يملك الدور المناسب (مثل دور "المشرف")، يتم منعه عن طريق الترخيص (Authorization).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    
+    <div class="progress" id="progressIndicator"></div>
+    <div class="controls">
+        <button class="control-btn" id="prevBtn" disabled>⬅️ السابق</button>
+        <button class="control-btn" id="nextBtn">التالي ➡️</button>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.card');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressIndicator = document.getElementById('progressIndicator');
+        let currentCardIndex = 0;
+        const totalCards = cards.length;
+
+        /**
+         * تحديث واجهة المستخدم لعرض السؤال الحالي
+         */
+        function updateUI() {
+            // إخفاء جميع البطاقات
+            cards.forEach(card => card.classList.remove('active'));
+            
+            // إظهار البطاقة الحالية
+            cards[currentCardIndex].classList.add('active');
+
+            // تحديث حالة الأزرار
+            prevBtn.disabled = currentCardIndex === 0;
+            nextBtn.disabled = currentCardIndex === totalCards - 1;
+
+            // تحديث مؤشر التقدم
+            progressIndicator.textContent = `السؤال ${currentCardIndex + 1} من ${totalCards}`;
+        }
+
+        /**
+         * الانتقال إلى السؤال التالي
+         */
+        function showNextCard() {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                updateUI();
+            }
+        }
+
+        /**
+         * الانتقال إلى السؤال السابق
+         */
+        function showPrevCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                updateUI();
+            }
+        }
+
+        // إضافة مستمعي الأحداث للأزرار
+        nextBtn.addEventListener('click', showNextCard);
+        prevBtn.addEventListener('click', showPrevCard);
+
+        // البدء بعرض السؤال الأول عند تحميل الصفحة
+        if (totalCards > 0) {
+            updateUI();
+        }
+    </script>
+</body>
+</html>
