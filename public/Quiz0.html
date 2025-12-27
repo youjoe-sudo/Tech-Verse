@@ -3,105 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech Verse - الامتحان المتقدم</title>
+    <title>Tech Verse - الامتحان الاحترافي</title>
     <style>
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --success: #28a745;
+            --bg: #f4f7f6;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
-            min-height: 100vh; padding: 20px; user-select: none;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            user-select: none;
         }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
-            max-width: 900px; margin: 0 auto; background: white;
-            border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
         }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #1a2a6c; padding-bottom: 10px; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 4px solid var(--primary);
+            padding-bottom: 20px;
+        }
+
+        .header h1 { color: var(--primary); font-size: 2.5em; margin-bottom: 10px; }
+
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1em; }
-        
-        .camera-box {
-            background: #f8f9fa; border: 2px dashed #1a2a6c; padding: 20px;
-            text-align: center; border-radius: 12px; margin-bottom: 20px;
+        .page.active { display: block; animation: slideUp 0.6s ease-out; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        #video { width: 100%; max-width: 400px; border-radius: 10px; background: #000; display: none; margin: 0 auto; }
-        #canvas { display: none; }
-        #photo-preview { width: 200px; border-radius: 10px; display: none; margin: 10px auto; border: 3px solid #28a745; }
+
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 10px; font-weight: 600; color: #333; }
+        input, textarea {
+            width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px;
+            font-size: 1em; transition: all 0.3s; background: #fafafa;
+        }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 10px rgba(26,42,108,0.1); }
+
+        /* Camera Box */
+        .camera-box {
+            background: #fff; border: 3px dashed var(--primary); padding: 30px;
+            text-align: center; border-radius: 20px; margin: 30px 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+        }
+        #video { width: 100%; max-width: 500px; border-radius: 15px; display: none; margin: 0 auto; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        #photo-preview { width: 100%; max-width: 300px; border-radius: 15px; display: none; margin: 15px auto; border: 5px solid var(--success); }
 
         .btn {
-            background: #1a2a6c; color: white; padding: 15px; border: none;
-            border-radius: 8px; font-size: 1.1em; cursor: pointer; width: 100%; transition: 0.3s;
+            background: var(--primary); color: white; padding: 18px 30px; border: none;
+            border-radius: 15px; font-size: 1.2em; cursor: pointer; width: 100%;
+            transition: 0.4s; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn:hover { background: #b21f1f; }
-        
-        .question-card { background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-right: 5px solid #1a2a6c; border-radius: 8px; }
-        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .option { background: white; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
-        .option:hover { background: #eef2ff; }
-        
-        .timer { position: fixed; top: 10px; left: 10px; background: white; padding: 10px; border-radius: 8px; font-weight: bold; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .cheat-warning { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: red; color: white; padding: 20px; border-radius: 10px; display: none; z-index: 2000; text-align: center; }
+        .btn:hover { background: var(--secondary); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+        /* Quiz UI */
+        .question-card {
+            background: #fff; padding: 25px; margin-bottom: 25px;
+            border-right: 8px solid var(--primary); border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .question-card p { font-size: 1.1em; font-weight: 600; color: var(--primary); }
+        .options { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+        .option {
+            background: #f8f9fa; padding: 15px; border: 2px solid #eee;
+            border-radius: 10px; cursor: pointer; transition: 0.3s; display: flex; align-items: center;
+        }
+        .option:hover { background: #eef2ff; border-color: var(--primary); }
+        .option input { width: auto; margin-left: 15px; }
+
+        .timer {
+            position: fixed; top: 20px; right: 20px; background: white;
+            padding: 15px 25px; border-radius: 50px; font-weight: bold;
+            font-size: 1.2em; border: 3px solid var(--primary); z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); color: var(--secondary);
+        }
+
+        .cheat-msg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); color: white; z-index: 10000;
+            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div class="timer" id="timerBox" style="display: none;">⏱️ الوقت: <span id="time">60:00</span></div>
-    <div class="cheat-warning" id="cheatWarning"><h2>⚠️ تحذير غش!</h2><p>سيتم إغلاق الامتحان عند تكرار المحاولة.</p></div>
+    <div class="timer" id="timerBox" style="display: none;">⏱️ <span id="time">60:00</span></div>
+    
+    <div class="cheat-msg" id="cheatMsg">
+        <h1 style="font-size: 3em; color: var(--secondary);">⚠️ تم اكتشاف غش!</h1>
+        <p style="font-size: 1.5em; margin-top: 20px;">لقد غادرت نافذة الامتحان. تم إرسال تقرير للإدارة.</p>
+    </div>
 
     <div class="container">
-        <div class="page active" id="infoPage">
-            <div class="header"><h1>🎓 Tech Verse Exam</h1><p>سجل بياناتك للبدء</p></div>
-            <form id="infoForm">
-                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="fullName" required></div>
+        <div class="page active" id="p1">
+            <div class="header">
+                <h1>مرحباً بك في Tech Verse</h1>
+                <p>الرجاء إكمال البيانات وفتح الكاميرا للبدء</p>
+            </div>
+            <form id="regForm">
+                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="name" required></div>
                 <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="email" required></div>
                 <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="phone" required></div>
                 
                 <div class="camera-box">
-                    <h3>📸 تحقق الهوية</h3>
-                    <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">يجب فتح الكاميرا والتقاط صورة واضحة لوجهك للسماح بدخول الامتحان.</p>
+                    <h3>📷 التحقق من الهوية</h3>
                     <video id="video" autoplay playsinline></video>
-                    <canvas id="canvas" width="400" height="300"></canvas>
-                    <img id="photo-preview" alt="صورة الطالب">
-                    <button type="button" class="btn" id="startCamBtn" style="margin-bottom: 10px;">فتح الكاميرا</button>
-                    <button type="button" class="btn" id="captureBtn" style="display: none; background: #28a745;">التقاط الصورة ✅</button>
+                    <img id="photo-preview">
+                    <canvas id="canvas" style="display:none;"></canvas>
+                    <button type="button" class="btn" id="btnOpen" style="margin-top:15px;">فتح الكاميرا</button>
+                    <button type="button" class="btn" id="btnSnap" style="display:none; background: var(--success); margin-top:15px;">التقاط صورة الدخول ✅</button>
                 </div>
-                
-                <button type="submit" class="btn" id="nextBtn" disabled>يجب التقاط صورة أولاً 🔒</button>
+                <button type="submit" class="btn" id="btnNext" disabled>التقط صورة أولاً 🔒</button>
             </form>
         </div>
 
-        <div class="page" id="instructionsPage">
-            <div class="header"><h1>📋 تعليمات هامة</h1></div>
-            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                <ul>
-                    <li>🚫 ممنوع الخروج من الصفحة أو تصغير المتصفح.</li>
-                    <li>🚫 أي محاولة لفتح tab جديد سيتم رصدها كغش.</li>
-                    <li>⏱️ مدة الامتحان: 60 دقيقة.</li>
-                    <li>📸 الكاميرا تراقب حضورك (لا تغلق المتصفح).</li>
-                </ul>
+        <div class="page" id="p2">
+            <div class="header"><h1>📝 تعليمات الامتحان</h1></div>
+            <div style="background: #fff3cd; padding: 25px; border-radius: 15px; border-right: 10px solid #ffc107; margin-bottom: 30px;">
+                <p style="margin-bottom: 10px;">• لديك <b>60 دقيقة</b> للإجابة على كل الأسئلة.</p>
+                <p style="margin-bottom: 10px;">• الخروج من هذه الصفحة بأي شكل سيعرض امتحانك <b>للإلغاء فوراً</b>.</p>
+                <p style="margin-bottom: 10px;">• تأكد من استقرار الإنترنت قبل البدء.</p>
             </div>
-            <button class="btn" onclick="startExam()">أنا جاهز - ابدأ الآن 🚀</button>
+            <button class="btn" onclick="startExam()">ابدأ الامتحان الآن 🚀</button>
         </div>
 
-        <div class="page" id="examPage">
+        <div class="page" id="p3">
             <form id="examForm">
-                <div id="questionsContainer"></div>
-                <hr><br>
-                <h3>📝 أسئلة مقالية (كتابة كود)</h3>
-                <div id="essayQuestionsContainer"></div>
-                <button type="submit" class="btn" style="margin-top: 30px;">إرسال الإجابات النهائية 📤</button>
+                <div id="qContainer"></div>
+                <h2 style="margin: 40px 0 20px; color: var(--secondary);">📝 القسم الثاني: أسئلة الكود (المقالي)</h2>
+                <div id="essayContainer"></div>
+                <button type="submit" class="btn" style="background: var(--success); margin-top: 40px;">تسليم الامتحان 📤</button>
             </form>
         </div>
 
-        <div class="page" id="successPage">
-            <div style="text-align: center; padding: 40px;">
-                <h2 style="color: #28a745;">✅ تم استلام إجاباتك بنجاح!</h2>
-                <p>شكراً لك. سيتم مراجعة الإجابات (بما فيها المقالي) من قبل الإدارة.</p>
-                <p>سيتم إعلان النتائج قريباً على الجروب الرسمي.</p>
+        <div class="page" id="p4">
+            <div style="text-align: center; padding: 50px;">
+                <h1 style="color: var(--success); font-size: 3em;">✅ شكراً لك</h1>
+                <p style="font-size: 1.2em; margin-top: 20px;">تم إرسال إجاباتك وصورتك بنجاح. سيتم مراجعتها من قبل المدرب.</p>
             </div>
         </div>
     </div>
@@ -110,89 +175,77 @@
         const BOT_TOKEN = '8187426147:AAEybLVw2t36OKJE-QDNBzeseG9w9UASah8';
         const CHAT_ID = '-5034617829';
 
-        let studentData = {};
-        let capturedImageBlob = null;
-        let cheatAttempts = 0;
-        let examClosed = false;
-        let timerInterval;
+        let student = {};
+        let imageBlob = null;
+        let isExamActive = false;
 
-        // --- نظام الكاميرا ---
+        // --- الكاميرا ---
         const video = document.getElementById('video');
+        const btnOpen = document.getElementById('btnOpen');
+        const btnSnap = document.getElementById('btnSnap');
+        const preview = document.getElementById('photo-preview');
         const canvas = document.getElementById('canvas');
-        const captureBtn = document.getElementById('captureBtn');
-        const startCamBtn = document.getElementById('startCamBtn');
-        const photoPreview = document.getElementById('photo-preview');
-        const nextBtn = document.getElementById('nextBtn');
 
-        startCamBtn.onclick = async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream;
-                video.style.display = 'block';
-                startCamBtn.style.display = 'none';
-                captureBtn.style.display = 'block';
-            } catch (err) {
-                alert("❌ خطأ: يجب السماح بالوصول للكاميرا لدخول الامتحان!");
-            }
+        btnOpen.onclick = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            video.style.display = 'block';
+            btnOpen.style.display = 'none';
+            btnSnap.style.display = 'block';
         };
 
-        captureBtn.onclick = () => {
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, 400, 300);
-            canvas.toBlob((blob) => {
-                capturedImageBlob = blob;
-                photoPreview.src = URL.createObjectURL(blob);
-                photoPreview.style.display = 'block';
+        btnSnap.onclick = () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.toBlob(b => {
+                imageBlob = b;
+                preview.src = URL.createObjectURL(b);
+                preview.style.display = 'block';
                 video.style.display = 'none';
-                captureBtn.innerText = "إعادة الالتقاط 📸";
-                nextBtn.disabled = false;
-                nextBtn.innerText = "التالي ⬅️";
-                // وقف الكاميرا عشان نوفر موارد
-                video.srcObject.getTracks().forEach(track => track.stop());
-            }, 'image/jpeg');
+                document.getElementById('btnNext').disabled = false;
+                document.getElementById('btnNext').innerText = "متابعة ⬅️";
+                video.srcObject.getTracks().forEach(t => t.stop());
+            }, 'image/jpeg', 0.9);
         };
 
         // --- الأسئلة ---
-        const objQuestions = [
-            { q: "أي كود من التالي يعطي رقمًا عشوائيًا بين 1 و 10 (شامل 10)؟", options: ["Math.random() * 10", "Math.floor(Math.random() * 10)", "Math.floor(Math.random() * 10) + 1", "Math.round(Math.random() * 10)"], a: 2 },
-            { q: "ما قيمة المتغير result؟ let x = 5; let y = '5'; let result = (x == y) && (x === y);", options: ["true", "false", "undefined", "NaN"], a: 1 },
-            { q: "أي من التالي يعتبر أفضل استخدام للدوال (Functions)؟", options: ["لتقليل الأسطر فقط", "لتقسيم البرنامج لمهام أصغر", "لاستبدال المتغيرات", "لزيادة السرعة"], a: 1 },
-            { q: "ما ناتج: let score=80; if(score>=90){'A'} else if(score>=80){'B'} else{'C'}", options: ["A", "B", "C", "لا شيء"], a: 1 },
-            { q: "ما طول المصفوفة: [2, 4, 6, 8, 10]", options: ["4", "5", "6", "غير محدد"], a: 1 },
-            { q: "أي من التالي يعبر عن شرط صحيح فقط إذا كان الشرطان صحيحين؟", options: ["||", "&&", "==", "==="], a: 1 },
-            { q: "ماذا يعبر الرقم داخل الأقواس في: tempList[i]", options: ["القيمة", "الطول", "الفهرس (index)", "النوع"], a: 2 },
-            { q: "ما ناتج: for(let i=1; i<=3; i++){ console.log(i*2) }", options: ["2 4 6", "1 2 3", "3 6 9", "2 3 4"], a: 0 },
-            { q: "أي من التالي نوع بيانات Boolean؟", options: ["'hello'", "25", "true", "'true'"], a: 2 },
-            { q: "ما الفرق بين == و === ؟", options: ["نفس الشيء", "=== للقيمة فقط", "== للنوع فقط", "=== للقيمة والنوع معًا"], a: 3 },
-            { q: "ما ناتج: let age=15; if(age>18){'Adult'}", options: ["Adult", "Underage", "لا يظهر شيء", "Error"], a: 2 },
-            { q: "ما فهرس 'JS' في: ['HTML', 'CSS', 'JS', 'Python']", options: ["1", "2", "3", "0"], a: 1 },
-            { q: "حلقة تبدأ من 0 إلى أقل من 5؟", options: ["for(i=0; i<5; i++)", "for(i=1; i<5; i++)", "for(i=0; i<=5; i++)", "for(i=5; i>0; i--)"], a: 0 },
-            { q: "ما فائدة return داخل الدالة؟", options: ["إيقاف الكود", "إعادة قيمة من الدالة", "تعريف متغير", "تكرار الكود"], a: 1 },
-            { q: "أي من التالي يعتبر String؟", options: ["25", "'25'", "true", "false"], a: 1 },
-            { q: "ماذا يحدث عند استخدام متغير غير معرف؟", options: ["لا شيء", "undefined", "Error", "null"], a: 2 },
-            { q: "ما وظيفة console.log() ؟", options: ["تشغيل البرنامج", "عرض ناتج على الشاشة", "تخزين بيانات", "إغلاق الكود"], a: 1 },
-            { q: "أيهم يمثل متغيرًا صحيح التعريف؟", options: ["let 2num = 10;", "let name = 'Ali';", "let -age = 15;", "let string = ;"], a: 1 },
-            { q: "ما ناتج: let x=10; if(x%2===0){'Even'} else{'Odd'}", options: ["Even", "Odd", "10", "undefined"], a: 0 },
-            { q: "أي تعبير صحيح إذا كان العدد x بين 10 و 20؟", options: ["x > 10 || x < 20", "x >= 10 && x <= 20", "x == 10 || 20", "x === 10 && 20"], a: 1 }
+        const objs = [
+            { q: "أي كود يعطي رقمًا عشوائيًا بين 1 و 10؟", o: ["Math.random()*10", "Math.floor(Math.random()*10)", "Math.floor(Math.random()*10)+1", "Math.round(Math.random()*10)"] },
+            { q: "ما قيمة المتغير result؟ let x=5; let y='5'; let res=(x==y)&&(x===y);", o: ["true", "false", "undefined", "NaN"] },
+            { q: "أفضل استخدام للدوال؟", o: ["تقليل الأسطر", "تقسيم المهام لمهام أصغر", "استبدال المتغيرات", "سرعة الجهاز"] },
+            { q: "ما ناتج: let s=80; if(s>=90){'A'} else if(s>=80){'B'} else{'C'}", o: ["A", "B", "C", "Error"] },
+            { q: "طول المصفوفة [2,4,6,8,10]؟", o: ["4", "5", "6", "غير محدد"] },
+            { q: "شرط صحيح إذا كان الشرطان صحيحين؟", o: ["||", "&&", "==", "==="] },
+            { q: "ماذا يمثل tempList[i]؟", o: ["القيمة", "الطول", "الفهرس (Index)", "النوع"] },
+            { q: "ناتج: for(let i=1; i<=3; i++){ console.log(i*2) }", o: ["2 4 6", "1 2 3", "3 6 9", "2 3 4"] },
+            { q: "أي من التالي Boolean؟", o: ["'hello'", "25", "true", "'true'"] },
+            { q: "الفرق بين == و === ؟", o: ["لا فرق", "=== قيمة فقط", "== نوع فقط", "=== قيمة ونوع"] },
+            { q: "ناتج: let age=15; if(age>18){'Adult'}", o: ["Adult", "Underage", "لا شيء", "Error"] },
+            { q: "فهرس 'JS' في ['HTML', 'CSS', 'JS', 'Python']", o: ["1", "2", "3", "0"] },
+            { q: "حلقة تبدأ من 0 لأقل من 5؟", o: ["for(i=0;i<5;i++)", "for(i=1;i<5;i++)", "for(i=0;i<=5;i++)", "for(i=5;i>0;i--)"] },
+            { q: "فائدة return؟", o: ["إيقاف الكود", "إعادة قيمة", "تعريف متغير", "تكرار"] },
+            { q: "أي من التالي String؟", o: ["25", "'25'", "true", "false"] },
+            { q: "استخدام متغير غير معرف يؤدي لـ؟", o: ["undefined", "null", "Error", "لا شيء"] },
+            { q: "وظيفة console.log() ؟", o: ["تشغيل", "عرض ناتج", "تخزين", "إغلاق"] },
+            { q: "تعريف متغير صحيح؟", o: ["let 2num=10;", "let name='Ali';", "let -age=15;", "let string=;"] },
+            { q: "ناتج: let x=10; if(x%2===0){'Even'} else{'Odd'}", o: ["Even", "Odd", "10", "Error"] },
+            { q: "تعبير صحيح لعدد بين 10 و 20؟", o: ["x>10||x<20", "x>=10&&x<=20", "x==10||20", "x===10&&20"] }
         ];
 
-        const essayQuestions = [
-            "اكتب دالة getGrade(score) تستخدم return لإرجاع التقدير (A, B, C, Fail).",
-            "اكتب كود يحسب مجموع ومتوسط درجات المصفوفة [10, 15, 20, 25, 30] باستخدام for.",
-            "برنامج يطلب عمر الطالب ويطبع (Child, Teen, Adult) باستخدام if/else.",
-            "اكتب دالة splitBill(total, people) لحساب نصيب الفرد من الفاتورة.",
-            "لديك مصفوفة [10, 15, 13, 16, 14, 12, 17]، اطبع أول وآخر عنصر والمتوسط وأعلى درجة."
+        const essays = [
+            "اكتب دالة getGrade(score) ترجع (A, B, C, Fail) باستخدام return.",
+            "احسب مجموع ومتوسط المصفوفة [10, 15, 20, 25, 30] باستخدام for.",
+            "اكتب برنامج يطلب العمر ويطبع (Child, Teen, Adult) بـ if/else.",
+            "اكتب دالة splitBill(total, people) ترجع نصيب الفرد.",
+            "من مصفوفة درجات أسبوع، اطبع (أول، آخر، متوسط، أعلى) درجة بـ for."
         ];
 
-        // --- معالجة الصفحات ---
-        document.getElementById('infoForm').onsubmit = (e) => {
+        // --- التحكم بالصفحات ---
+        document.getElementById('regForm').onsubmit = (e) => {
             e.preventDefault();
-            studentData = {
-                name: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value
-            };
-            showPage('instructionsPage');
+            student = { name: document.getElementById('name').value, email: document.getElementById('email').value, phone: document.getElementById('phone').value };
+            showPage('p2');
         };
 
         function showPage(id) {
@@ -201,129 +254,75 @@
         }
 
         function startExam() {
-            showPage('examPage');
+            showPage('p3');
+            isExamActive = true;
             document.getElementById('timerBox').style.display = 'block';
-            renderQuestions();
+            renderQuiz();
             startTimer();
-            startMonitoring();
+            window.onblur = () => { if(isExamActive) triggerCheat(); };
         }
 
-        function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
-            objQuestions.forEach((q, i) => {
-                const card = document.createElement('div');
-                card.className = 'question-card';
-                card.innerHTML = `
-                    <p><strong>س${i+1}:</strong> ${q.q}</p>
-                    <div class="options">
-                        ${q.options.map((opt, oi) => `
-                            <label class="option">
-                                <input type="radio" name="obj${i}" value="${opt}" required> ${opt}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(card);
+        function renderQuiz() {
+            const qc = document.getElementById('qContainer');
+            objs.forEach((q, i) => {
+                const d = document.createElement('div');
+                d.className = 'question-card';
+                d.innerHTML = `<p>${i+1}. ${q.q}</p><div class="options">` + 
+                    q.o.map(opt => `<label class="option"><input type="radio" name="o${i}" value="${opt}" required> ${opt}</label>`).join('') + `</div>`;
+                qc.appendChild(d);
             });
-
-            const essayContainer = document.getElementById('essayQuestionsContainer');
-            essayQuestions.forEach((q, i) => {
-                const card = document.createElement('div');
-                card.className = 'question-card';
-                card.innerHTML = `
-                    <p><strong>سؤال مقالي ${i+1}:</strong> ${q}</p>
-                    <textarea name="essay${i}" rows="4" placeholder="اكتب الكود هنا..." required></textarea>
-                `;
-                essayContainer.appendChild(card);
+            const ec = document.getElementById('essayContainer');
+            essays.forEach((q, i) => {
+                const d = document.createElement('div');
+                d.className = 'question-card';
+                d.innerHTML = `<p>${q}</p><textarea name="e${i}" rows="4" required placeholder="اكتب الكود هنا..."></textarea>`;
+                ec.appendChild(d);
             });
-        }
-
-        // --- المراقبة ---
-        function startMonitoring() {
-            window.onblur = () => {
-                if(!examClosed) {
-                    cheatAttempts++;
-                    showCheatWarning();
-                    if(cheatAttempts >= 3) submitExam(true);
-                }
-            };
-            document.oncontextmenu = (e) => e.preventDefault();
-            document.onkeydown = (e) => {
-                if(e.ctrlKey || e.key === 'F12') {
-                    showCheatWarning();
-                    return false;
-                }
-            };
-        }
-
-        function showCheatWarning() {
-            const w = document.getElementById('cheatWarning');
-            w.style.display = 'block';
-            setTimeout(() => w.style.display = 'none', 3000);
         }
 
         function startTimer() {
-            let time = 60 * 60;
-            timerInterval = setInterval(() => {
-                time--;
-                let m = Math.floor(time/60);
-                let s = time%60;
-                document.getElementById('time').innerText = `${m}:${s < 10 ? '0'+s : s}`;
-                if(time <= 0) submitExam();
+            let t = 3600;
+            const interval = setInterval(() => {
+                t--;
+                let m = Math.floor(t/60), s = t%60;
+                document.getElementById('time').innerText = `${m}:${s<10?'0'+s:s}`;
+                if(t<=0) { clearInterval(interval); finishExam(); }
             }, 1000);
         }
 
-        // --- الإرسال ---
+        function triggerCheat() {
+            isExamActive = false;
+            document.getElementById('cheatMsg').style.display = 'flex';
+            finishExam("🚨 محاولة غش (تبديل نافذة)");
+        }
+
         document.getElementById('examForm').onsubmit = (e) => {
             e.preventDefault();
-            if(confirm("هل أنت متأكد من تسليم الامتحان؟")) submitExam();
+            if(confirm("هل أنت متأكد من تسليم إجاباتك؟")) finishExam();
         };
 
-        async function submitExam(wasKicked = false) {
-            examClosed = true;
-            clearInterval(timerInterval);
-            
-            const formData = new FormData(document.getElementById('examForm'));
-            let resultsText = `📝 إجابات الطالب: ${studentData.name}\n`;
-            resultsText += `📞 الهاتف: ${studentData.phone}\n`;
-            resultsText += `⚠️ محاولات الغش: ${cheatAttempts}\n`;
-            resultsText += wasKicked ? "❌ الحالة: تم طرده لمحاولة الغش\n" : "✅ الحالة: تسليم طبيعي\n";
-            resultsText += `------------------------\n`;
+        async function finishExam(status = "✅ تسليم طبيعي") {
+            isExamActive = false;
+            const form = new FormData(document.getElementById('examForm'));
+            let msg = `🎓 *نتائج الطالب: ${student.name}*\n📞 ${student.phone}\n📧 ${student.email}\n📍 الحالة: ${status}\n\n📝 *الإجابات المقالية:*\n`;
+            essays.forEach((_, i) => msg += `*س${i+1}:* ${form.get('e'+i)}\n`);
 
-            // جمع الإجابات الاختيارية
-            objQuestions.forEach((q, i) => {
-                resultsText += `س${i+1}: ${formData.get('obj'+i)}\n`;
-            });
-
-            resultsText += `\n📝 الإجابات المقالية:\n`;
-            essayQuestions.forEach((q, i) => {
-                resultsText += `س${i+1} المقالي:\n${formData.get('essay'+i)}\n\n`;
-            });
-
-            // إرسال الصورة أولاً
-            const photoData = new FormData();
-            photoData.append('chat_id', CHAT_ID);
-            photoData.append('photo', capturedImageBlob, 'student.jpg');
-            photoData.append('caption', `📸 صورة الطالب: ${studentData.name}`);
+            const photo = new FormData();
+            photo.append('chat_id', CHAT_ID);
+            photo.append('photo', imageBlob, 'selfie.jpg');
+            photo.append('caption', `صورة الطالب: ${student.name}`);
 
             try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: photoData });
-                
-                // إرسال الإجابات كرسالة نصية (لو طويلة جداً يفضل إرسالها كملف لكن هنبعتها نص دلوقتي)
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: photo });
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        chat_id: CHAT_ID,
-                        text: resultsText
-                    })
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
                 });
-            } catch (err) {
-                console.error("خطأ في الإرسال", err);
-            }
+            } catch (e) { console.error(e); }
 
-            showPage('successPage');
-            if(wasKicked) alert("تم إنهاء الامتحان بسبب الغش.");
+            showPage('p4');
+            document.getElementById('timerBox').style.display = 'none';
         }
     </script>
 </body>
