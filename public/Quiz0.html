@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Verse - الامتحان المتقدم</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+            min-height: 100vh; padding: 20px; user-select: none;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; background: white;
+            border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #1a2a6c; padding-bottom: 10px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1em; }
+        
+        .camera-box {
+            background: #f8f9fa; border: 2px dashed #1a2a6c; padding: 20px;
+            text-align: center; border-radius: 12px; margin-bottom: 20px;
+        }
+        #video { width: 100%; max-width: 400px; border-radius: 10px; background: #000; display: none; margin: 0 auto; }
+        #canvas { display: none; }
+        #photo-preview { width: 200px; border-radius: 10px; display: none; margin: 10px auto; border: 3px solid #28a745; }
+
+        .btn {
+            background: #1a2a6c; color: white; padding: 15px; border: none;
+            border-radius: 8px; font-size: 1.1em; cursor: pointer; width: 100%; transition: 0.3s;
+        }
+        .btn:hover { background: #b21f1f; }
+        
+        .question-card { background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-right: 5px solid #1a2a6c; border-radius: 8px; }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .option { background: white; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
+        .option:hover { background: #eef2ff; }
+        
+        .timer { position: fixed; top: 10px; left: 10px; background: white; padding: 10px; border-radius: 8px; font-weight: bold; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .cheat-warning { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: red; color: white; padding: 20px; border-radius: 10px; display: none; z-index: 2000; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="timer" id="timerBox" style="display: none;">⏱️ الوقت: <span id="time">60:00</span></div>
+    <div class="cheat-warning" id="cheatWarning"><h2>⚠️ تحذير غش!</h2><p>سيتم إغلاق الامتحان عند تكرار المحاولة.</p></div>
+
+    <div class="container">
+        <div class="page active" id="infoPage">
+            <div class="header"><h1>🎓 Tech Verse Exam</h1><p>سجل بياناتك للبدء</p></div>
+            <form id="infoForm">
+                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="fullName" required></div>
+                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="email" required></div>
+                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="phone" required></div>
+                
+                <div class="camera-box">
+                    <h3>📸 تحقق الهوية</h3>
+                    <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">يجب فتح الكاميرا والتقاط صورة واضحة لوجهك للسماح بدخول الامتحان.</p>
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas" width="400" height="300"></canvas>
+                    <img id="photo-preview" alt="صورة الطالب">
+                    <button type="button" class="btn" id="startCamBtn" style="margin-bottom: 10px;">فتح الكاميرا</button>
+                    <button type="button" class="btn" id="captureBtn" style="display: none; background: #28a745;">التقاط الصورة ✅</button>
+                </div>
+                
+                <button type="submit" class="btn" id="nextBtn" disabled>يجب التقاط صورة أولاً 🔒</button>
+            </form>
+        </div>
+
+        <div class="page" id="instructionsPage">
+            <div class="header"><h1>📋 تعليمات هامة</h1></div>
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <ul>
+                    <li>🚫 ممنوع الخروج من الصفحة أو تصغير المتصفح.</li>
+                    <li>🚫 أي محاولة لفتح tab جديد سيتم رصدها كغش.</li>
+                    <li>⏱️ مدة الامتحان: 60 دقيقة.</li>
+                    <li>📸 الكاميرا تراقب حضورك (لا تغلق المتصفح).</li>
+                </ul>
+            </div>
+            <button class="btn" onclick="startExam()">أنا جاهز - ابدأ الآن 🚀</button>
+        </div>
+
+        <div class="page" id="examPage">
+            <form id="examForm">
+                <div id="questionsContainer"></div>
+                <hr><br>
+                <h3>📝 أسئلة مقالية (كتابة كود)</h3>
+                <div id="essayQuestionsContainer"></div>
+                <button type="submit" class="btn" style="margin-top: 30px;">إرسال الإجابات النهائية 📤</button>
+            </form>
+        </div>
+
+        <div class="page" id="successPage">
+            <div style="text-align: center; padding: 40px;">
+                <h2 style="color: #28a745;">✅ تم استلام إجاباتك بنجاح!</h2>
+                <p>شكراً لك. سيتم مراجعة الإجابات (بما فيها المقالي) من قبل الإدارة.</p>
+                <p>سيتم إعلان النتائج قريباً على الجروب الرسمي.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BOT_TOKEN = '8187426147:AAEybLVw2t36OKJE-QDNBzeseG9w9UASah8';
+        const CHAT_ID = '-5034617829';
+
+        let studentData = {};
+        let capturedImageBlob = null;
+        let cheatAttempts = 0;
+        let examClosed = false;
+        let timerInterval;
+
+        // --- نظام الكاميرا ---
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('captureBtn');
+        const startCamBtn = document.getElementById('startCamBtn');
+        const photoPreview = document.getElementById('photo-preview');
+        const nextBtn = document.getElementById('nextBtn');
+
+        startCamBtn.onclick = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                startCamBtn.style.display = 'none';
+                captureBtn.style.display = 'block';
+            } catch (err) {
+                alert("❌ خطأ: يجب السماح بالوصول للكاميرا لدخول الامتحان!");
+            }
+        };
+
+        captureBtn.onclick = () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, 400, 300);
+            canvas.toBlob((blob) => {
+                capturedImageBlob = blob;
+                photoPreview.src = URL.createObjectURL(blob);
+                photoPreview.style.display = 'block';
+                video.style.display = 'none';
+                captureBtn.innerText = "إعادة الالتقاط 📸";
+                nextBtn.disabled = false;
+                nextBtn.innerText = "التالي ⬅️";
+                // وقف الكاميرا عشان نوفر موارد
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }, 'image/jpeg');
+        };
+
+        // --- الأسئلة ---
+        const objQuestions = [
+            { q: "أي كود من التالي يعطي رقمًا عشوائيًا بين 1 و 10 (شامل 10)؟", options: ["Math.random() * 10", "Math.floor(Math.random() * 10)", "Math.floor(Math.random() * 10) + 1", "Math.round(Math.random() * 10)"], a: 2 },
+            { q: "ما قيمة المتغير result؟ let x = 5; let y = '5'; let result = (x == y) && (x === y);", options: ["true", "false", "undefined", "NaN"], a: 1 },
+            { q: "أي من التالي يعتبر أفضل استخدام للدوال (Functions)؟", options: ["لتقليل الأسطر فقط", "لتقسيم البرنامج لمهام أصغر", "لاستبدال المتغيرات", "لزيادة السرعة"], a: 1 },
+            { q: "ما ناتج: let score=80; if(score>=90){'A'} else if(score>=80){'B'} else{'C'}", options: ["A", "B", "C", "لا شيء"], a: 1 },
+            { q: "ما طول المصفوفة: [2, 4, 6, 8, 10]", options: ["4", "5", "6", "غير محدد"], a: 1 },
+            { q: "أي من التالي يعبر عن شرط صحيح فقط إذا كان الشرطان صحيحين؟", options: ["||", "&&", "==", "==="], a: 1 },
+            { q: "ماذا يعبر الرقم داخل الأقواس في: tempList[i]", options: ["القيمة", "الطول", "الفهرس (index)", "النوع"], a: 2 },
+            { q: "ما ناتج: for(let i=1; i<=3; i++){ console.log(i*2) }", options: ["2 4 6", "1 2 3", "3 6 9", "2 3 4"], a: 0 },
+            { q: "أي من التالي نوع بيانات Boolean؟", options: ["'hello'", "25", "true", "'true'"], a: 2 },
+            { q: "ما الفرق بين == و === ؟", options: ["نفس الشيء", "=== للقيمة فقط", "== للنوع فقط", "=== للقيمة والنوع معًا"], a: 3 },
+            { q: "ما ناتج: let age=15; if(age>18){'Adult'}", options: ["Adult", "Underage", "لا يظهر شيء", "Error"], a: 2 },
+            { q: "ما فهرس 'JS' في: ['HTML', 'CSS', 'JS', 'Python']", options: ["1", "2", "3", "0"], a: 1 },
+            { q: "حلقة تبدأ من 0 إلى أقل من 5؟", options: ["for(i=0; i<5; i++)", "for(i=1; i<5; i++)", "for(i=0; i<=5; i++)", "for(i=5; i>0; i--)"], a: 0 },
+            { q: "ما فائدة return داخل الدالة؟", options: ["إيقاف الكود", "إعادة قيمة من الدالة", "تعريف متغير", "تكرار الكود"], a: 1 },
+            { q: "أي من التالي يعتبر String؟", options: ["25", "'25'", "true", "false"], a: 1 },
+            { q: "ماذا يحدث عند استخدام متغير غير معرف؟", options: ["لا شيء", "undefined", "Error", "null"], a: 2 },
+            { q: "ما وظيفة console.log() ؟", options: ["تشغيل البرنامج", "عرض ناتج على الشاشة", "تخزين بيانات", "إغلاق الكود"], a: 1 },
+            { q: "أيهم يمثل متغيرًا صحيح التعريف؟", options: ["let 2num = 10;", "let name = 'Ali';", "let -age = 15;", "let string = ;"], a: 1 },
+            { q: "ما ناتج: let x=10; if(x%2===0){'Even'} else{'Odd'}", options: ["Even", "Odd", "10", "undefined"], a: 0 },
+            { q: "أي تعبير صحيح إذا كان العدد x بين 10 و 20؟", options: ["x > 10 || x < 20", "x >= 10 && x <= 20", "x == 10 || 20", "x === 10 && 20"], a: 1 }
+        ];
+
+        const essayQuestions = [
+            "اكتب دالة getGrade(score) تستخدم return لإرجاع التقدير (A, B, C, Fail).",
+            "اكتب كود يحسب مجموع ومتوسط درجات المصفوفة [10, 15, 20, 25, 30] باستخدام for.",
+            "برنامج يطلب عمر الطالب ويطبع (Child, Teen, Adult) باستخدام if/else.",
+            "اكتب دالة splitBill(total, people) لحساب نصيب الفرد من الفاتورة.",
+            "لديك مصفوفة [10, 15, 13, 16, 14, 12, 17]، اطبع أول وآخر عنصر والمتوسط وأعلى درجة."
+        ];
+
+        // --- معالجة الصفحات ---
+        document.getElementById('infoForm').onsubmit = (e) => {
+            e.preventDefault();
+            studentData = {
+                name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value
+            };
+            showPage('instructionsPage');
+        };
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function startExam() {
+            showPage('examPage');
+            document.getElementById('timerBox').style.display = 'block';
+            renderQuestions();
+            startTimer();
+            startMonitoring();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            objQuestions.forEach((q, i) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <p><strong>س${i+1}:</strong> ${q.q}</p>
+                    <div class="options">
+                        ${q.options.map((opt, oi) => `
+                            <label class="option">
+                                <input type="radio" name="obj${i}" value="${opt}" required> ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            const essayContainer = document.getElementById('essayQuestionsContainer');
+            essayQuestions.forEach((q, i) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <p><strong>سؤال مقالي ${i+1}:</strong> ${q}</p>
+                    <textarea name="essay${i}" rows="4" placeholder="اكتب الكود هنا..." required></textarea>
+                `;
+                essayContainer.appendChild(card);
+            });
+        }
+
+        // --- المراقبة ---
+        function startMonitoring() {
+            window.onblur = () => {
+                if(!examClosed) {
+                    cheatAttempts++;
+                    showCheatWarning();
+                    if(cheatAttempts >= 3) submitExam(true);
+                }
+            };
+            document.oncontextmenu = (e) => e.preventDefault();
+            document.onkeydown = (e) => {
+                if(e.ctrlKey || e.key === 'F12') {
+                    showCheatWarning();
+                    return false;
+                }
+            };
+        }
+
+        function showCheatWarning() {
+            const w = document.getElementById('cheatWarning');
+            w.style.display = 'block';
+            setTimeout(() => w.style.display = 'none', 3000);
+        }
+
+        function startTimer() {
+            let time = 60 * 60;
+            timerInterval = setInterval(() => {
+                time--;
+                let m = Math.floor(time/60);
+                let s = time%60;
+                document.getElementById('time').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+                if(time <= 0) submitExam();
+            }, 1000);
+        }
+
+        // --- الإرسال ---
+        document.getElementById('examForm').onsubmit = (e) => {
+            e.preventDefault();
+            if(confirm("هل أنت متأكد من تسليم الامتحان؟")) submitExam();
+        };
+
+        async function submitExam(wasKicked = false) {
+            examClosed = true;
+            clearInterval(timerInterval);
+            
+            const formData = new FormData(document.getElementById('examForm'));
+            let resultsText = `📝 إجابات الطالب: ${studentData.name}\n`;
+            resultsText += `📞 الهاتف: ${studentData.phone}\n`;
+            resultsText += `⚠️ محاولات الغش: ${cheatAttempts}\n`;
+            resultsText += wasKicked ? "❌ الحالة: تم طرده لمحاولة الغش\n" : "✅ الحالة: تسليم طبيعي\n";
+            resultsText += `------------------------\n`;
+
+            // جمع الإجابات الاختيارية
+            objQuestions.forEach((q, i) => {
+                resultsText += `س${i+1}: ${formData.get('obj'+i)}\n`;
+            });
+
+            resultsText += `\n📝 الإجابات المقالية:\n`;
+            essayQuestions.forEach((q, i) => {
+                resultsText += `س${i+1} المقالي:\n${formData.get('essay'+i)}\n\n`;
+            });
+
+            // إرسال الصورة أولاً
+            const photoData = new FormData();
+            photoData.append('chat_id', CHAT_ID);
+            photoData.append('photo', capturedImageBlob, 'student.jpg');
+            photoData.append('caption', `📸 صورة الطالب: ${studentData.name}`);
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: photoData });
+                
+                // إرسال الإجابات كرسالة نصية (لو طويلة جداً يفضل إرسالها كملف لكن هنبعتها نص دلوقتي)
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: resultsText
+                    })
+                });
+            } catch (err) {
+                console.error("خطأ في الإرسال", err);
+            }
+
+            showPage('successPage');
+            if(wasKicked) alert("تم إنهاء الامتحان بسبب الغش.");
+        }
+    </script>
+</body>
+</html>
