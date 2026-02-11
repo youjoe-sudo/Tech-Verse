@@ -1,0 +1,15 @@
+{
+  "name": "tv",
+  "version": "1.0.0",
+  "description": "Tech Verse Backend Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Tech Verse Team",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.22.1"
+  }
+}

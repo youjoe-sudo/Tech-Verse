@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Control | Tech Verse</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #7b5cff;
+    --accent: #5eead4;
+    --bg: #050507;
+    --glass: rgba(255,255,255,0.06);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top right, #1b123f, transparent),
+        radial-gradient(circle at bottom left, #0f766e, transparent),
+        var(--bg);
+    font-family: 'Cairo', sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.panel {
+    width: 100%;
+    max-width: 900px;
+    background: var(--glass);
+    backdrop-filter: blur(18px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 30px;
+    box-shadow: 0 0 40px rgba(123,92,255,0.2);
+}
+
+.panel h1 {
+    margin: 0 0 20px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+input {
+    width: 100%;
+    background: #0f0f14;
+    border: 1px solid #2a2a3a;
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.question {
+    background: rgba(0,0,0,0.35);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #2a2a3a;
+    animation: fadeUp 0.4s ease;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.add {
+    background: var(--primary);
+    color: white;
+}
+
+.add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(123,92,255,0.4);
+}
+
+.publish {
+    background: var(--accent);
+    color: black;
+}
+
+.publish:hover {
+    transform: scale(1.05);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+    <h1>🚀 إدارة الكويزات – Tech Verse</h1>
+
+    <input id="quizTitle" placeholder="اسم الكويز (CSS – JS – AI…)">
+
+    <div id="questions">
+        <div class="question">
+            <input class="q-text" placeholder="السؤال">
+            <input class="q-options" placeholder="الاختيارات (افصلهم بفاصلة ,)">
+            <input class="q-answer" placeholder="الإجابة الصحيحة">
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="add" onclick="addQuestion()">➕ إضافة سؤال</button>
+        <button class="publish" onclick="publishQuiz()">🚀 نشر الكويز</button>
+    </div>
+</div>
+
+<script>
+function addQuestion() {
+    const q = document.createElement('div');
+    q.className = 'question';
+    q.innerHTML = `
+        <input class="q-text" placeholder="السؤال">
+        <input class="q-options" placeholder="الاختيارات (افصلهم بفاصلة ,)">
+        <input class="q-answer" placeholder="الإجابة الصحيحة">
+    `;
+    document.getElementById('questions').appendChild(q);
+}
+
+async function publishQuiz() {
+    const title = quizTitle.value.trim();
+    if(!title) {
+        alert("اكتب اسم الكويز الأول يا CEO 👀");
+        return;
+    }
+
+    const questions = [];
+    document.querySelectorAll('.question').forEach(q => {
+        const question = q.querySelector('.q-text').value.trim();
+        const options = q.querySelector('.q-options').value.split(',').map(o => o.trim());
+        const correct = q.querySelector('.q-answer').value.trim();
+
+        if(question && options.length > 1 && correct) {
+            questions.push({ question, options, correct });
+        }
+    });
+
+    if(questions.length === 0) {
+        alert("ولا سؤال؟ احنا بنشتغل ولا ايه 😅");
+        return;
+    }
+
+    const res = await fetch('/add-quiz', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ title, questions })
+    });
+
+    if(res.ok) {
+        alert("🔥 الكويز نزل لايف");
+        location.reload();
+    } else {
+        alert("❌ في حاجة ضربت، راجع السيرفر");
+    }
+}
+</script>
+
+</body>
+</html>

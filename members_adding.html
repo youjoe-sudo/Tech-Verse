@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Verse | Admin Panel</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#050507;
+  --card:#0b0b10;
+  --primary:#7b5cff;
+  --accent:#5eead4;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --glass:rgba(255,255,255,.06);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Cairo',sans-serif;
+  background:
+    radial-gradient(circle at top, #0b0b12, #050507);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+/* ===== Card ===== */
+.panel{
+  width:100%;
+  max-width:520px;
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.1);
+  padding:32px 26px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+
+/* ===== Header ===== */
+.header{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.header h1{
+  font-size:1.8rem;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.header span{
+  color:var(--primary);
+  text-shadow:0 0 25px rgba(123,92,255,.4);
+}
+
+.header p{
+  font-size:.9rem;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+/* ===== Inputs ===== */
+.field{
+  margin-bottom:16px;
+}
+
+.field label{
+  display:block;
+  font-size:.8rem;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+input, textarea{
+  width:100%;
+  padding:14px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:#0f0f15;
+  color:white;
+  font-size:.95rem;
+  transition:.3s;
+}
+
+input:focus, textarea:focus{
+  outline:none;
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(123,92,255,.15);
+}
+
+textarea{
+  resize:none;
+}
+
+/* ===== Button ===== */
+button{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg, var(--primary), var(--accent));
+  color:#050507;
+  font-weight:800;
+  font-size:1rem;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 15px 40px rgba(123,92,255,.35);
+}
+
+/* ===== Toast ===== */
+.toast{
+  margin-top:20px;
+  padding:14px;
+  border-radius:14px;
+  font-size:.9rem;
+  display:none;
+}
+
+.toast.success{
+  background:rgba(94,234,212,.15);
+  color:var(--accent);
+}
+
+.toast.error{
+  background:rgba(255,80,80,.15);
+  color:#ff8080;
+}
+
+/* ===== Footer ===== */
+.footer{
+  text-align:center;
+  margin-top:25px;
+  font-size:.7rem;
+  color:var(--muted);
+  opacity:.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+
+  <div class="header">
+    <h1>TECH<span>VERSE</span></h1>
+    <p>لوحة تحكم إضافة الأعضاء</p>
+  </div>
+
+  <div class="field">
+    <label>اسم العضو</label>
+    <input id="name" placeholder="Mohamed Ahmed">
+  </div>
+
+  <div class="field">
+    <label>الرتبة / الدور</label>
+    <input id="role" placeholder="Frontend Developer">
+  </div>
+
+  <div class="field">
+    <label>نبذة مختصرة</label>
+    <textarea id="bio" rows="3" placeholder="طالب مهتم بالويب والتقنيات الحديثة"></textarea>
+  </div>
+
+  <div class="field">
+    <label>المهارات</label>
+    <input id="skills" placeholder="HTML, CSS, JavaScript">
+  </div>
+
+  <div class="field">
+    <label>ID العضو</label>
+    <input id="id" placeholder="005">
+  </div>
+
+  <button onclick="generateJSON()">إضافة العضو</button>
+
+  <div id="toast" class="toast"></div>
+
+  <div class="footer">
+    Admin Access • Tech Verse © 2026
+  </div>
+
+</div>
+
+<script>
+async function generateJSON(){
+  const toast = document.getElementById("toast");
+
+  // الخطوة اللي كانت ناقصة: نمسك العناصر الأول
+  const idInput = document.getElementById("id");
+  const nameInput = document.getElementById("name");
+  const roleInput = document.getElementById("role");
+  const bioInput = document.getElementById("bio");
+  const skillsInput = document.getElementById("skills");
+
+  const member = {
+    // نستخدم .value هنا بأمان
+    id: idInput.value.trim(),
+    name: nameInput.value.trim(),
+    role: roleInput.value.trim(),
+    bio: bioInput.value.trim(),
+    skills: skillsInput.value.split(',').map(s => s.trim()),
+    pic: "https://via.placeholder.com/150"
+  };
+
+  if(!member.id || !member.name){
+    showToast("لازم الاسم و الـ ID يا نجم", "error");
+    return;
+  }
+
+  // باقي الكود بتاع الـ fetch زي ما هو...
+  try {
+    const res = await fetch('/add-member',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(member)
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+      showToast("✔ العضو اتضاف بنجاح", "success");
+      document.querySelectorAll('input, textarea').forEach(el => el.value = "");
+    }else{
+      showToast(data.error || "حصلت مشكلة", "error");
+    }
+  }catch(e){
+    showToast("السيرفر مش شغال", "error");
+  }
+}
+
+function showToast(msg,type){
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.className = `toast ${type}`;
+  toast.style.display = "block";
+
+  setTimeout(()=>{
+    toast.style.display = "none";
+  },3000);
+}
+</script>
+
+</body>
+</html>

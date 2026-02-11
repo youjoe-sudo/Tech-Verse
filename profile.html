@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Verse | بروفايل العضو</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#050507;
+  --primary:#7b5cff;
+  --accent:#5eead4;
+  --glass:rgba(255,255,255,.08);
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Cairo',sans-serif;
+  background:
+    linear-gradient(rgba(5,5,7,.85),rgba(5,5,7,.95)),
+    url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80");
+  background-size:cover;
+  background-position:center;
+  background-attachment: fixed;
+  color:var(--text);
+  min-height:100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* ===== Profile Card (بنفس ستايل الـ Coming Soon) ===== */
+.profile-card {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  border-radius: 26px;
+  padding: 40px 30px;
+  max-width: 450px;
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.12);
+  text-align: center;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* صورة العضو بتأثير النيون */
+.profile-pic {
+  width: 130px;
+  height: 130px;
+  border-radius: 20px; /* مربعة بحواف دائرية أشيك للـ Tech */
+  border: 2px solid var(--primary);
+  margin-bottom: 20px;
+  object-fit: cover;
+  box-shadow: 0 0 20px rgba(123,92,255,0.3);
+}
+
+.profile-card h1 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.profile-card h1 span {
+  color: var(--primary);
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 5px 15px;
+  background: rgba(94, 234, 212, 0.1);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.profile-card p {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+/* علبة الـ QR */
+.qr-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    z-index: 100;
+}
+
+#qrcode {
+    background: white; /* الـ QR لازم خلفية بيضا عشان يتشاف */
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.download-qr {
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid var(--accent);
+    padding: 4px 8px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.download-qr:hover {
+    background: var(--accent);
+    color: black;
+}
+/* سيكشن المهارات أو السوشيال */
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.skill-tag {
+  background: rgba(255,255,255,0.05);
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* زرار الرجوع أو التواصل */
+.action-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(123,92,255,0.3);
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123,92,255,0.5);
+}
+
+.member-id {
+  margin-top: 20px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* Animations */
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+</style>
+</head>
+
+<body>
+
+  <div class="profile-card">
+    <img src="https://via.placeholder.com/150" alt="صورة العضو" class="profile-pic">
+    
+    <h1>أحمد <span>سامي</span></h1>
+    <div class="role-badge">Lead Developer</div>
+    
+    <p>
+      عضو أساسي في تيك فيرس، بيحب يفكك الأكواد ويركبها تاني وهو بيشرب قهوة. تخصصه الأساسي هو بناء واجهات تخطف العين.
+    </p>
+
+    <div class="skills">
+      <div class="skill-tag">React.js</div>
+      <div class="skill-tag">UI/UX</div>
+      <div class="skill-tag">Node.js</div>
+      <div class="skill-tag">Python</div>
+    </div>
+
+    <a href="index.html" class="action-btn">العودة للمجرة</a>
+
+    <div class="member-id">
+      VERIFIED ID: TV-2026-042
+    </div>
+  </div>
+  <div class="qr-container">
+    <div id="qrcode"></div>
+    <a id="downloadLink" class="download-qr">تحميل الـ QR</a>
+</div>
+
+<script>
+    // 1. توليد الـ QR بناءً على لينك الصفحة الحالي
+    const currentUrl = window.location.href; 
+    
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: currentUrl,
+        width: 100,
+        height: 100,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    // 2. كود التحميل (عشان تاخد الصورة تحطها في الـ ID)
+    window.onload = function() {
+        setTimeout(() => {
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            if (qrCanvas) {
+                const qrImage = qrCanvas.toDataURL("image/png");
+                document.getElementById('downloadLink').href = qrImage;
+                document.getElementById('downloadLink').download = `QR_Member_${memberId || 'TechVerse'}.png`;
+            }
+        }, 500); // تأخير بسيط لضمان توليد الـ QR
+    };
+</script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+const memberId = urlParams.get('id');
+
+fetch('members.json')
+  .then(response => response.json())
+  .then(data => {
+    const member = data.find(m => m.id === memberId);
+    if (member) {
+      document.querySelector('.profile-pic').src = member.pic;
+      document.querySelector('h1').innerHTML = member.name;
+      document.querySelector('.role-badge').innerText = member.role;
+      document.querySelector('p').innerText = member.bio;
+      document.querySelector('.member-id').innerText = `VERIFIED ID: TV-2026-${member.id}`;
+      
+      // إضافة المهارات
+      const skillsDiv = document.querySelector('.skills');
+      skillsDiv.innerHTML = member.skills.map(s => `<div class="skill-tag">${s}</div>`).join('');
+    } else {
+      document.body.innerHTML = "<h1>العضو غير موجود في المجرة!</h1>";
+    }
+  });
+</script>
+</body>
+</html>

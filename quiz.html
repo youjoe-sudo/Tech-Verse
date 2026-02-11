@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Tech Verse Quiz | نظام المجرة</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#050507;
+    --primary:#7b5cff;
+    --accent:#5eead4;
+    --danger:#ff6b6b;
+    --glass:rgba(255,255,255,.08);
+    --text:#e5e7eb;
+}
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Cairo',sans-serif;
+    background:
+        radial-gradient(circle at top right,#24145a,transparent),
+        radial-gradient(circle at bottom left,#0f766e,transparent),
+        var(--bg);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.quiz-card{
+    width:100%;
+    max-width:520px;
+    background:var(--glass);
+    backdrop-filter:blur(25px);
+    border-radius:26px;
+    padding:28px;
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 0 45px rgba(123,92,255,.35);
+    animation:fadeUp .6s ease;
+}
+
+.hidden{display:none!important}
+
+h1,h2,h3{margin-top:0}
+
+input[type="text"],
+input[type="file"]{
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+    border-radius:14px;
+    background:#0f0f14;
+    border:1px solid #2a2a35;
+    color:white;
+    font-family:'Cairo';
+}
+
+label{font-size:.85rem;color:#9ca3af}
+
+.start-btn{
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),#9b7bff);
+    color:white;
+    font-size:1rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.start-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 15px 40px rgba(123,92,255,.45);
+}
+
+#quizHeader{
+    margin-bottom:10px;
+}
+
+#counter{
+    font-size:.8rem;
+    color:#9ca3af;
+}
+
+.option{
+    padding:16px;
+    margin:12px 0;
+    border-radius:16px;
+    background:rgba(255,255,255,.05);
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.option:hover{
+    background:rgba(123,92,255,.15);
+    border-color:var(--primary);
+}
+
+.option.correct{
+    background:rgba(94,234,212,.15);
+    border-color:var(--accent);
+    color:var(--accent);
+}
+
+.option.wrong{
+    background:rgba(255,107,107,.15);
+    border-color:var(--danger);
+    color:var(--danger);
+}
+
+#nextBtn{
+    opacity:.5;
+    pointer-events:none;
+}
+
+/* Modal */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:99;
+}
+
+.modal-box{
+    background:var(--glass);
+    backdrop-filter:blur(25px);
+    padding:26px;
+    border-radius:22px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,.15);
+    max-width:340px;
+}
+
+.modal-box p{
+    font-size:.9rem;
+    color:#cbd5f5;
+}
+
+.result-line{
+    font-size:1.1rem;
+    margin:8px 0;
+}
+
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="quiz-card" id="loginBox">
+    <h2 style="text-align:center">🚀 دخول كويز Tech Verse</h2>
+    <p style="font-size:.9rem;color:#9ca3af;text-align:center">
+        الاسم + صورة البطاقة مطلوبة
+    </p>
+    <input type="text" id="userName" placeholder="اسمك الثلاثي">
+    <label>صورة بطاقة العضوية</label>
+    <input type="file" id="userCard" accept="image/*">
+    <button class="start-btn" onclick="startQuiz()">ابدأ الاختبار</button>
+</div>
+
+<!-- QUIZ -->
+<div class="quiz-card hidden" id="quizBox">
+    <div id="quizHeader">
+        <div id="quizTitle" style="font-weight:900;color:var(--primary)"></div>
+        <div id="counter"></div>
+    </div>
+
+    <div id="questionText" style="font-size:1.2rem;margin:20px 0"></div>
+    <div id="optionsBox"></div>
+
+    <button id="nextBtn" class="start-btn"></button>
+</div>
+
+<!-- RESULT -->
+<div class="quiz-card hidden" id="resultBox" style="text-align:center">
+    <h1>🎉 النتيجة النهائية</h1>
+    <div id="finalScore" style="margin:20px 0"></div>
+    <p id="tgStatus">جاري إرسال النتيجة...</p>
+    <a href="quiz-list.html" style="color:var(--primary)">العودة للكويزات</a>
+</div>
+
+<script>
+const TG_TOKEN="YOUR_BOT_TOKEN";
+const TG_CHAT_ID="YOUR_CHAT_ID";
+
+let quiz=null,idx=0,score=0,wrong=0,locked=false;
+let startTime=null;
+let userData={name:"",cardFile:null};
+
+const title=new URLSearchParams(location.search).get("title");
+fetch(`/get-quiz/${title}`).then(r=>r.json()).then(d=>quiz=d);
+
+function startQuiz(){
+    if(!userName.value||!userCard.files[0])
+        return alert("كمّل البيانات يا بطل ⭐");
+
+    userData={name:userName.value,cardFile:userCard.files[0]};
+    startTime=Date.now();
+    loginBox.classList.add("hidden");
+    quizBox.classList.remove("hidden");
+    loadQuestion();
+}
+
+function loadQuestion(){
+    locked=false;
+    nextBtn.style.opacity=".5";
+    nextBtn.style.pointerEvents="none";
+
+    const q=quiz.questions[idx];
+    quizTitle.innerText=quiz.title;
+    questionText.innerText=q.question;
+    counter.innerText=`سؤال ${idx+1} من ${quiz.questions.length}`;
+
+    optionsBox.innerHTML="";
+    q.options.forEach(opt=>{
+        const d=document.createElement("div");
+        d.className="option";
+        d.innerText=opt;
+        d.onclick=()=>selectOption(d,opt,q.correct);
+        optionsBox.appendChild(d);
+    });
+
+    nextBtn.innerText=idx===quiz.questions.length-1
+        ?"📤 تسليم الإجابات"
+        :"السؤال التالي";
+}
+
+function selectOption(el,sel,cor){
+    if(locked)return;
+    locked=true;
+
+    document.querySelectorAll('.option').forEach(o=>{
+        if(o.innerText.trim()===cor.trim()) o.classList.add("correct");
+    });
+
+    if(sel.trim()===cor.trim()) score++;
+    else{ el.classList.add("wrong"); wrong++; }
+
+    nextBtn.style.opacity="1";
+    nextBtn.style.pointerEvents="auto";
+}
+
+nextBtn.onclick=()=>{
+    if(idx===quiz.questions.length-1) confirmSubmit();
+    else{ idx++; loadQuestion(); }
+};
+
+function confirmSubmit(){
+    const m=document.createElement("div");
+    m.className="modal";
+    m.innerHTML=`
+        <div class="modal-box">
+            <h3>تأكيد التسليم</h3>
+            <p>مش هينفع تعدّل بعد كده</p>
+            <button class="start-btn" onclick="finishQuiz()">تسليم</button>
+            <button class="start-btn" style="background:#333;margin-top:10px"
+                onclick="this.closest('.modal').remove()">إلغاء</button>
+        </div>`;
+    document.body.appendChild(m);
+}
+
+function finishQuiz(){
+    document.querySelector('.modal')?.remove();
+    quizBox.classList.add("hidden");
+    resultBox.classList.remove("hidden");
+
+    const time=Math.floor((Date.now()-startTime)/1000);
+    finalScore.innerHTML=`
+        <div class="result-line">✔️ إجابات صحيحة: <b>${score}</b></div>
+        <div class="result-line">❌ إجابات غلط: <b>${wrong}</b></div>
+        <div class="result-line">⏱️ الوقت: <b>${time} ثانية</b></div>
+    `;
+
+    sendToTelegram(time);
+}
+
+async function sendToTelegram(time){
+    const msg=`🚀 نتيجة كويز
+👤 ${userData.name}
+📚 ${quiz.title}
+✔️ صح: ${score}
+❌ غلط: ${wrong}
+⏱️ ${time}s`;
+
+    const fd=new FormData();
+    fd.append("chat_id",TG_CHAT_ID);
+    fd.append("photo",userData.cardFile);
+    fd.append("caption",msg);
+
+    try{
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`,{
+            method:"POST",body:fd
+        });
+        tgStatus.innerText="✅ النتيجة اتبعتت بنجاح";
+    }catch{
+        tgStatus.innerText="❌ فشل الإرسال";
+    }
+}
+</script>
+</body>
+</html>

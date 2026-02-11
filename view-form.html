@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Verse | نموذج التقديم</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg:#050507;
+    --primary:#7b5cff;
+    --accent:#5eead4;
+    --glass:rgba(255,255,255,0.06);
+    --text:#e5e7eb;
+    --danger:#ff6b6b;
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background: radial-gradient(circle at top right, #1b123f, var(--bg));
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 700px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 40px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:none;}
+}
+
+h1 { 
+    color: var(--accent); 
+    margin-bottom: 25px; 
+    text-align: center; 
+    font-weight: 900; 
+}
+
+.field-group { margin-bottom: 20px; }
+
+label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-size: 1rem; 
+}
+
+input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid #333;
+    border-radius: 12px;
+    color: white;
+    font-family: 'Cairo';
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(123,92,255,0.2); }
+
+.options-group { display: flex; flex-direction: column; gap: 10px; }
+
+.option-item {
+    background: rgba(255,255,255,0.03);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 12px;
+    color: #050507;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 15px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(94, 234, 212, 0.3);
+}
+
+#statusMsg {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+</style>
+</head>
+<body>
+
+<div class="form-container" id="mainForm">
+    <h1 id="formTitle">جاري تحميل الاستمارة...</h1>
+    <form id="dynamicForm">
+        <!-- بيانات الشخص -->
+        <div class="field-group">
+            <label>الاسم الثلاثي</label>
+            <input type="text" name="name" required placeholder="اكتب اسمك بالكامل">
+        </div>
+        <div class="field-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" name="email" required placeholder="example@domain.com">
+        </div>
+        <div class="field-group">
+            <label>رقم الواتس</label>
+            <input type="tel" name="whatsapp" required placeholder="مثال: 201234567890+">
+        </div>
+
+        <!-- الأسئلة الديناميكية -->
+        <div id="fieldsContainer"></div>
+
+        <button type="submit" class="submit-btn">إرسال البيانات للمجرة 🚀</button>
+    </form>
+    <div id="statusMsg"></div>
+</div>
+
+<script>
+const TG_TOKEN = "YOUR_BOT_TOKEN";
+const TG_CHAT_ID = "YOUR_CHAT_ID";
+
+const urlParams = new URLSearchParams(window.location.search);
+const formTitleParam = urlParams.get('title');
+
+async function loadForm() {
+    try {
+        const res = await fetch('/get-form-details?title=' + encodeURIComponent(formTitleParam));
+        const formData = await res.json();
+
+        document.getElementById('formTitle').innerText = formData.title;
+        const container = document.getElementById('fieldsContainer');
+
+        formData.questions.forEach((q,index)=>{
+            const group = document.createElement('div');
+            group.className = 'field-group';
+            const labelStyle = q.isBold ? 'font-weight:900;color:var(--accent);' : '';
+            group.innerHTML = `<label style="${labelStyle}">${q.label}</label>`;
+
+            let inputHTML = '';
+            if(q.type==='text'){
+                inputHTML=`<input type="text" name="q${index}" required placeholder="اكتب إجابتك هنا...">`;
+            } else if(q.type==='textarea'){
+                inputHTML=`<textarea name="q${index}" rows="4" required placeholder="استفيض في الإجابة..."></textarea>`;
+            } else if(q.type==='radio'||q.type==='checkbox'){
+                inputHTML=`<div class="options-group">`;
+                q.options.forEach(opt=>{
+                    inputHTML+=`<label class="option-item"><input type="${q.type}" name="q${index}" value="${opt.trim()}"> ${opt.trim()}</label>`;
+                });
+                inputHTML+='</div>';
+            }
+
+            group.innerHTML+=inputHTML;
+            container.appendChild(group);
+        });
+    } catch(e){
+        document.getElementById('formTitle').innerText="خطأ: الفورم غير موجود!";
+    }
+}
+
+document.getElementById('dynamicForm').onsubmit = async (e)=>{
+    e.preventDefault();
+    const btn=document.querySelector('.submit-btn');
+    btn.innerText="جاري الإرسال...";
+    btn.disabled=true;
+
+    const formData = new FormData(e.target);
+    const responses = {};
+    formData.forEach((val,key)=>responses[key]=val);
+
+    try {
+        // إرسال للبوت
+        let msg=`🚀 *نموذج جديد* \n`;
+        msg+=`👤 الاسم: ${responses.name}\n`;
+        msg+=`📧 البريد: ${responses.email}\n`;
+        msg+=`📱 واتس: ${responses.whatsapp}\n`;
+        msg+=`\n📄 الإجابات:\n`;
+        Object.keys(responses).forEach(key=>{
+            if(!['name','email','whatsapp'].includes(key)){
+                msg+=`${key}: ${responses[key]}\n`;
+            }
+        });
+
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({chat_id:TG_CHAT_ID,text:msg,parse_mode:"Markdown"})
+        });
+
+        document.getElementById('mainForm').innerHTML = `
+            <h1 style="color:var(--accent)">تم استلام ردك! ✅</h1>
+            <p style="text-align:center">شكراً لانضمامك لمجرة Tech Verse.</p>
+            <a href="index.html" class="submit-btn" style="display:block; text-align:center; text-decoration:none; margin-top:20px;">العودة للرئيسية</a>
+        `;
+
+    } catch(err){
+        alert("حدث خطأ أثناء الإرسال!");
+        btn.disabled=false;
+        btn.innerText="إرسال البيانات للمجرة 🚀";
+    }
+};
+
+loadForm();
+</script>
+</body>
+</html>

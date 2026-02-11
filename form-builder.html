@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Form Builder | Tech Verse</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#050507;
+    --primary:#7b5cff;
+    --accent:#5eead4;
+    --glass:rgba(255,255,255,.08);
+    --text:#e5e7eb;
+}
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Cairo',sans-serif;
+    background:
+        radial-gradient(circle at top right,#24145a,transparent),
+        radial-gradient(circle at bottom left,#0f766e,transparent),
+        var(--bg);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    padding:20px;
+}
+
+.builder-card{
+    width:100%;
+    max-width:900px;
+    background:var(--glass);
+    backdrop-filter:blur(25px);
+    border-radius:28px;
+    padding:28px;
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 0 50px rgba(123,92,255,.35);
+    animation:fadeUp .6s ease;
+}
+
+h2{
+    margin-top:0;
+    font-weight:900;
+}
+
+.form-title{
+    width:100%;
+    padding:16px;
+    border-radius:18px;
+    border:1px solid #2a2a35;
+    background:#0f0f14;
+    color:white;
+    font-size:1.1rem;
+    margin-bottom:20px;
+}
+
+.questions-list{
+    margin-top:10px;
+}
+
+.question-item{
+    background:rgba(0,0,0,.35);
+    border-radius:20px;
+    padding:18px;
+    margin:18px 0;
+    border-right:4px solid var(--primary);
+    animation:fadeUp .4s ease;
+}
+
+.q-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.q-row input,
+.q-row select{
+    padding:10px;
+    border-radius:12px;
+    border:1px solid #333;
+    background:#111;
+    color:white;
+    font-family:'Cairo';
+}
+
+.q-label{
+    flex:1;
+    min-width:220px;
+}
+
+.q-type{
+    min-width:160px;
+}
+
+.q-options{
+    width:100%;
+    display:none;
+}
+
+.q-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:10px;
+    font-size:.9rem;
+    color:#cbd5f5;
+}
+
+.remove-btn{
+    background:none;
+    border:none;
+    color:#ff6b6b;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.btn{
+    padding:14px 22px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    font-weight:700;
+    font-family:'Cairo';
+    transition:.3s;
+}
+
+.btn-add{
+    background:linear-gradient(135deg,var(--primary),#9b7bff);
+    color:white;
+}
+
+.btn-save{
+    background:linear-gradient(135deg,var(--accent),#34d399);
+    color:#020617;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 30px rgba(123,92,255,.4);
+}
+
+.actions{
+    display:flex;
+    gap:15px;
+    margin-top:25px;
+    flex-wrap:wrap;
+}
+
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:none}
+}
+
+/* Mobile */
+@media(max-width:600px){
+    .builder-card{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="builder-card">
+    <h2>🛠 باني الفورمات الذكي</h2>
+    <p style="color:#9ca3af;font-size:.9rem">
+        ابنِ فورم احترافي بسهولة – وخلّي السيستم يشتغل عنك
+    </p>
+
+    <input class="form-title" id="formTitle"
+           placeholder="عنوان الفورم (مثلاً: التقديم على Tech Verse Design Team)">
+
+    <div class="questions-list" id="questionsList"></div>
+
+    <div class="actions">
+        <button class="btn btn-add" onclick="addQuestion()">+ إضافة سؤال</button>
+        <button class="btn btn-save" onclick="saveForm()">🚀 حفظ ونشر الفورم</button>
+    </div>
+</div>
+
+<script>
+function addQuestion(){
+    const item=document.createElement("div");
+    item.className="question-item";
+
+    item.innerHTML=`
+        <div class="q-row">
+            <input class="q-label" placeholder="نص السؤال">
+            <select class="q-type">
+                <option value="text">نص قصير</option>
+                <option value="textarea">نص طويل</option>
+                <option value="radio">اختيار واحد</option>
+                <option value="checkbox">اختيارات متعددة</option>
+            </select>
+        </div>
+
+        <input class="q-options" placeholder="الاختيارات (افصل بـ ,)">
+
+        <div class="q-actions">
+            <label>
+                <input type="checkbox" class="q-bold"> سؤال مهم (Bold)
+            </label>
+            <button class="remove-btn" onclick="this.closest('.question-item').remove()">
+                حذف السؤال ✖
+            </button>
+        </div>
+    `;
+
+    const typeSelect=item.querySelector(".q-type");
+    const optionsInput=item.querySelector(".q-options");
+
+    typeSelect.onchange=()=>{
+        optionsInput.style.display=
+            (typeSelect.value==="radio"||typeSelect.value==="checkbox")
+            ?"block":"none";
+    };
+
+    document.getElementById("questionsList").appendChild(item);
+}
+
+async function saveForm(){
+    const title=document.getElementById("formTitle").value;
+    if(!title) return alert("حط عنوان للفورم الأول 👀");
+
+    const questions=[];
+    document.querySelectorAll(".question-item").forEach(q=>{
+        questions.push({
+            label:q.querySelector(".q-label").value,
+            type:q.querySelector(".q-type").value,
+            isBold:q.querySelector(".q-bold").checked,
+            options:q.querySelector(".q-options").value
+                ? q.querySelector(".q-options").value.split(",").map(o=>o.trim())
+                : []
+        });
+    });
+
+    if(!questions.length) return alert("ضيف سؤال واحد على الأقل 😅");
+
+    const res=await fetch("/create-form",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({title,questions})
+    });
+
+    if(res.ok) alert("🔥 الفورم اتنشر وجاهز للاستخدام");
+}
+</script>
+
+</body>
+</html>

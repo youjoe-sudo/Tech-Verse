@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Verse | تجربة تعليمية مختلفة</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#050507;
+  --primary:#7b5cff;
+  --accent:#5eead4;
+  --glass:rgba(255,255,255,.08);
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Cairo',sans-serif;
+  background:
+    linear-gradient(rgba(5,5,7,.85),rgba(5,5,7,.95)),
+    url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80");
+  background-size:cover;
+  background-position:center;
+  background-attachment: fixed;
+  color:var(--text);
+  min-height:100vh;
+  overflow: hidden; /* عشان المنيو متعملش سكرول بالعرض */
+}
+
+/* ===== Hamburger Button ===== */
+.menu-btn{
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:54px;
+  height:54px;
+  border-radius:16px;
+  background:var(--glass);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,.15);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  z-index:1000;
+  box-shadow:0 10px 40px rgba(0,0,0,.4);
+  transition: 0.3s;
+}
+
+.menu-btn span{
+  width:22px;
+  height:2px;
+  background:white;
+  border-radius:2px;
+  transition:.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* تحويل الزرار لـ X عند الفتح */
+.menu-btn.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.menu-btn.open span:nth-child(2) { opacity: 0; }
+.menu-btn.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* ===== Side Menu ===== */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -320px; /* بتبدأ من اليمين عشان الموقع RTL */
+  width: 300px;
+  height: 100%;
+  background: rgba(5, 5, 7, 0.95);
+  backdrop-filter: blur(20px);
+  z-index: 900;
+  transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  border-left: 1px solid rgba(255,255,255,.1);
+}
+
+.side-menu.active { right: 0; }
+
+.side-menu ul { list-style: none; }
+.side-menu ul li { margin: 25px 0; opacity: 0; transform: translateX(20px); transition: 0.4s; }
+.side-menu.active ul li { opacity: 1; transform: translateX(0); transition-delay: 0.3s; }
+
+.side-menu ul li a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.side-menu ul li a:hover { color: var(--primary); padding-right: 10px; }
+
+/* ===== Blur Overlay ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(0px);
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.5s ease;
+  z-index: 800;
+}
+
+.overlay.active {
+  visibility: visible;
+  opacity: 1;
+  backdrop-filter: blur(12px);
+}
+
+/* ===== Center Content ===== */
+.container{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+  transition: 0.5s;
+}
+
+/* ===== Logo ===== */
+.logo{
+  font-size:38px;
+  font-weight:900;
+  letter-spacing:3px;
+  margin-bottom:20px;
+}
+
+.logo span{
+  color:var(--primary);
+  text-shadow:0 0 30px rgba(123,92,255,.45);
+}
+
+/* ===== Coming Soon Box ===== */
+.coming{
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border-radius:26px;
+  padding:36px 26px;
+  max-width:520px;
+  border:1px solid rgba(255,255,255,.12);
+  animation:float 6s ease-in-out infinite;
+  z-index: 10;
+}
+
+.coming h1{
+  font-size:2.2rem;
+  margin-bottom:14px;
+}
+
+.coming h1 span{
+  color:var(--accent);
+}
+
+.coming p{
+  color:var(--muted);
+  font-size:1rem;
+  line-height:1.8;
+  margin-bottom:24px;
+}
+
+/* ===== Badge ===== */
+.badge{
+  display:inline-block;
+  padding:10px 26px;
+  border-radius:999px;
+  background:linear-gradient(90deg, rgba(123,92,255,.2), rgba(94,234,212,.2));
+  color:white;
+  font-size:.85rem;
+  letter-spacing:2px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ===== Footer ===== */
+footer{
+  position:fixed;
+  bottom:20px;
+  width:100%;
+  text-align:center;
+  font-size:.7rem;
+  color:var(--muted);
+  opacity:.5;
+}
+
+/* ===== Animations ===== */
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+@media(min-width:768px){
+  .coming h1{ font-size:2.7rem; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="menu-btn" id="menuBtn">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<nav class="side-menu" id="sideMenu">
+    <ul>
+        <li><a href="/quiz-list.html">الكويزات</a></li>
+        <li><a href="/members_adding.html">ضيف اعضاء</a></li>
+        <li><a href="/quiz-dashboard.html">اعمل كويز</a></li>
+        <li><a href="/profile.html?id=666">ملف تجريبي</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+  <div class="logo">
+    TECH<span>VERSE</span>
+  </div>
+
+  <div class="coming">
+    <h1>
+      Something <span>Big</span> is Coming
+    </h1>
+    <p>
+      بنحضّر حاجة مختلفة… <br>
+      تجربة تعليمية بشكل جديد. <br>
+      التفاصيل؟ قريب جدًا.
+    </p>
+    <div class="badge">
+      COMING SOON
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 Tech Verse | All Rights Reserved
+</footer>
+
+<script>
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('overlay');
+
+    // وظيفة الفتح والقفل
+    function toggleMenu() {
+        menuBtn.classList.toggle('open');
+        sideMenu.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+
+    menuBtn.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+
+    // قفل المنيو عند الضغط على أي لينك
+    document.querySelectorAll('.side-menu a').forEach(link => {
+        link.addEventListener('click', toggleMenu);
+    });
+</script>
+
+</body>
+</html>
