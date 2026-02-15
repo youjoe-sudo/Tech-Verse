@@ -8,6 +8,14 @@ app.use(express.static(__dirname));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html')); 
 });
+// في أول الكود فوق
+const membersPath = path.join(__dirname, 'members.json');
+const quizzesPath = path.join(__dirname, 'quizzes.json');
+const formsPath = path.join(__dirname, 'forms.json');
+const submissionsPath = path.join(__dirname, 'submissions.json');
+
+// وعند القراءة (تعدل كل الـ readFileSync):
+const members = JSON.parse(fs.readFileSync(membersPath, 'utf8'));
 // متغير بيعرفنا إحنا شغالين على Vercel ولا على الجهاز الشخصي
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
 

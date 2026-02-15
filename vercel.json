@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js", 
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static",
+      "exclude": "server.js"
+    }
+  ],
+  "routes": [
+    { "src": "/members.json", "dest": "/members.json" },
+    { "src": "/quizzes.json", "dest": "/quizzes.json" },
+    { "src": "/forms.json", "dest": "/forms.json" },
+    { "src": "/submissions.json", "dest": "/submissions.json" },
+    { "src": "/(index.html)?", "dest": "/index.html" },
+    { "src": "/(.*)", "dest": "/server.js" }
+  ]
+}
