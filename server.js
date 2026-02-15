@@ -8,6 +8,32 @@ app.use(express.static(__dirname));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html')); 
 });
+
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
+
+app.get('/create-quiz', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
+
+app.get('/quiz-list', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
+
+app.get('/add-member', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
+app.get('/member', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
+app.get('/create-form', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
+app.get('/form', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
+
 // في أول الكود فوق
 const membersPath = path.join(__dirname, 'members.json');
 const quizzesPath = path.join(__dirname, 'quizzes.json');
