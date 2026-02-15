@@ -6,26 +6,42 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname)); 
 
-// دالة مساعدة للتأكد من وجود الملفات عشان السيرفر ميضربش
-const files = ['members.json', 'quizzes.json', 'forms.json', 'submissions.json'];
-files.forEach(file => {
-    if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify([], null, 2));
-});
+// متغير بيعرفنا إحنا شغالين على Vercel ولا على الجهاز الشخصي
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+
+// دالة مساعدة للكتابة: بتكتب فقط لو مش على Vercel
+const safeWriteSync = (file, data) => {
+    if (!isProduction) {
+        fs.writeFileSync(file, JSON.stringify(data, null, 2));
+        return true;
+    }
+    console.warn(`⚠️ محاولة كتابة مرفوضة على Vercel لملف: ${file}`);
+    return false;
+};
+
+// التأكد من وجود الملفات (فقط لو محلياً)
+if (!isProduction) {
+    const files = ['members.json', 'quizzes.json', 'forms.json', 'submissions.json'];
+    files.forEach(file => {
+        if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify([], null, 2));
+    });
+}
 
 // ==============================
 // أولاً: نظام الفورمات (Forms)
 // ==============================
 
-// 1. إنشاء فورم جديد (من الداشبورد)
 app.post('/create-form', (req, res) => {
     try {
+        if (isProduction) return res.status(403).json({ error: 'التعديل متاح فقط من جهاز المطور' });
+        
         const forms = JSON.parse(fs.readFileSync('forms.json', 'utf8'));
         forms.push(req.body);
-        fs.writeFileSync('forms.json', JSON.stringify(forms, null, 2));
+        safeWriteSync('forms.json', forms);
         res.json({ message: 'تم إنشاء الاستمارة بنجاح!' });
     } catch (error) { res.status(500).json({ error: 'فشل إنشاء الفورم' }); }
 });
-// 2. جلب تفاصيل فورم معين (ده اللي كان ناقصك ومسبب 404)
+
 app.get('/get-form-details', (req, res) => {
     try {
         const title = req.query.title;
@@ -36,12 +52,13 @@ app.get('/get-form-details', (req, res) => {
     } catch (error) { res.status(500).json({ error: 'خطأ في جلب البيانات' }); }
 });
 
-// 3. حفظ ردود الناس في الفورم
 app.post('/submit-form', (req, res) => {
     try {
+        if (isProduction) return res.status(403).json({ error: 'عفواً، Vercel لا يسمح بحفظ الردود في ملفات JSON. استخدم قاعدة بيانات.' });
+        
         const subs = JSON.parse(fs.readFileSync('submissions.json', 'utf8'));
         subs.push({ ...req.body, date: new Date().toLocaleString('ar-EG') });
-        fs.writeFileSync('submissions.json', JSON.stringify(subs, null, 2));
+        safeWriteSync('submissions.json', subs);
         res.json({ message: 'تم استلام ردك بنجاح' });
     } catch (error) { res.status(500).json({ error: 'فشل حفظ الرد' }); }
 });
@@ -59,9 +76,11 @@ app.get('/list-quizzes', (req, res) => {
 
 app.post('/add-quiz', (req, res) => {
     try {
+        if (isProduction) return res.status(403).json({ error: 'إضافة الكويزات متاحة من الجهاز الشخصي فقط' });
+        
         const data = JSON.parse(fs.readFileSync('quizzes.json', 'utf8'));
         data.push(req.body);
-        fs.writeFileSync('quizzes.json', JSON.stringify(data, null, 2));
+        safeWriteSync('quizzes.json', data);
         res.status(200).json({ message: 'تم نشر الكويز!' });
     } catch (error) { res.status(500).json({ error: 'خطأ في الحفظ' }); }
 });
@@ -81,9 +100,11 @@ app.get('/get-quiz/:title', (req, res) => {
 
 app.post('/add-member', (req, res) => {
     try {
+        if (isProduction) return res.status(403).json({ error: 'إضافة الأعضاء متاحة من الجهاز الشخصي فقط' });
+        
         const members = JSON.parse(fs.readFileSync('members.json', 'utf8'));
         members.push(req.body);
-        fs.writeFileSync('members.json', JSON.stringify(members, null, 2));
+        safeWriteSync('members.json', members);
         res.status(200).json({ message: 'تمت إضافة العضو!' });
     } catch (error) { res.status(500).json({ error: 'خطأ في ملف الأعضاء' }); }
 });
@@ -99,6 +120,8 @@ app.get('/check-attempt/:memberId/:quizTitle', (req, res) => {
 
 app.post('/finish-quiz', (req, res) => {
     try {
+        if (isProduction) return res.status(200).json({ message: 'تم العرض (لا يتم الحفظ على Vercel)' });
+
         const { memberId, quizTitle } = req.body;
         const members = JSON.parse(fs.readFileSync('members.json', 'utf8'));
         const index = members.findIndex(m => m.id === memberId);
@@ -106,13 +129,17 @@ app.post('/finish-quiz', (req, res) => {
             if (!members[index].completedQuizzes) members[index].completedQuizzes = [];
             if (!members[index].completedQuizzes.includes(quizTitle)) {
                 members[index].completedQuizzes.push(quizTitle);
-                fs.writeFileSync('members.json', JSON.stringify(members, null, 2));
+                safeWriteSync('members.json', members);
             }
             res.json({ message: 'تم التسجيل!' });
         } else { res.status(404).json({ error: 'العضو غير موجود' }); }
     } catch (error) { res.status(500).json({ error: 'فشل التسجيل' }); }
 });
 
-app.listen(3000, () => {
-    console.log('🚀 Tech Verse Server is running on http://localhost:3000');
+// تشغيل السيرفر
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
 });
+
+module.exports = app; // مهم جداً لـ Vercel

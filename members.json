@@ -8,5 +8,15 @@
       "Speaking"
     ],
     "pic": "/img/Hager.jpg"
+  },
+  {
+    "id": "001",
+    "name": "Abdelfatah",
+    "role": "FO",
+    "bio": "شغال",
+    "skills": [
+      "كتير"
+    ],
+    "pic": "https://via.placeholder.com/150"
   }
 ]

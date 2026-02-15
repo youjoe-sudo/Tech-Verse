@@ -9,5 +9,22 @@
         "options": []
       }
     ]
+  },
+  {
+    "title": "Hiring",
+    "questions": [
+      {
+        "label": "اشتغلت ف تيمات قبل كده",
+        "type": "text",
+        "isBold": true,
+        "options": []
+      },
+      {
+        "label": "كلمنا عن نفسك ف خمس سطور",
+        "type": "textarea",
+        "isBold": true,
+        "options": []
+      }
+    ]
   }
 ]
