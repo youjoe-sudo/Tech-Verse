@@ -5,7 +5,9 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static(__dirname)); 
-
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); 
+});
 // متغير بيعرفنا إحنا شغالين على Vercel ولا على الجهاز الشخصي
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
 
