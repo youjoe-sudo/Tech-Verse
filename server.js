@@ -23,10 +23,14 @@ const safeWrite = (fileName, data) => {
 
 // دالة مساعدة للقراءة: بتبحث عن الملف في المسار الصحيح
 const safeRead = (fileName) => {
-    const filePath = path.join(__dirname, fileName);
+    // path.resolve بيضمن إننا بنقرأ من الفولدر الرئيسي للمشروع
+    const filePath = path.resolve(__dirname, fileName);
+    
     if (fs.existsSync(filePath)) {
-        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data);
     }
+    console.log(`⚠️ الملف ${fileName} غير موجود في المسار: ${filePath}`);
     return [];
 };
 
