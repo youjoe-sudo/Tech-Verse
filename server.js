@@ -5,12 +5,21 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static(__dirname)); 
+
+app.get('/:page.html', (req, res) => {
+    const filepath = path.join(__dirname, '${req.params.page}.html');
+    if (fs.existsSync(filepath)) {res.sendFile(filepath);}
+    else{
+        res.status(404).send('الملف غير موجود')
+    }
+    })
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html')); 
 });
 
 // في أول الكود فوق
-const membersPath = path.join( 'members.json');
+const membersPath = path.join(__dirname, 'members.json');
 const quizzesPath = path.join(__dirname, 'quizzes.json');
 const formsPath = path.join(__dirname, 'forms.json');
 const submissionsPath = path.join(__dirname, 'submissions.json');
